@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ossl-rt-transfer"
+dynamic = ["version"]
+description = "Test whether OSSL-trained MIR models transfer to the instruments of the soil spectroscopy ring trial"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "Apache-2.0"
+authors = [{name = "Franck Albinet", email = "franckalbinet@gmail.com"}]
+keywords = ['nbdev']
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+dependencies = [
+    'soilspecdl>=0.3.0',
+    'soilspecdata>=0.3.0',
+    'soilspectfm>=0.1.2',
+    'numpy',
+    'pandas',
+    'matplotlib',
+    'scikit-learn',
+    'scipy',
+    'openpyxl',
+]
+
+[project.optional-dependencies]
+dev = ["nbdev>=3.3.24", "ipykernel", "build"]
+
+[project.urls]
+Repository = "https://github.com/franckalbinet/ossl-rt-transfer"
+Documentation = "https://franckalbinet.github.io/ossl-rt-transfer/"
+
+[project.entry-points.nbdev]
+ossl_rt_transfer = "ossl_rt_transfer._modidx:d"
+
+[tool.setuptools.dynamic]
+version = {attr = "ossl_rt_transfer.__version__"}
+
+[tool.setuptools.packages.find]
+include = ["ossl_rt_transfer"]
+
+[tool.nbdev]
+tst_flags = "notest rtdata"
+custom_sidebar = true
+title = 'OSSL to ring trial transfer'
+
+[tool.uv.sources]
+soilspecdl = { path = "../soilspecdl", editable = true }
+soilspecdata = { path = "../soilspecdata", editable = true }
+soilspectfm = { path = "../soilspectfm", editable = true }

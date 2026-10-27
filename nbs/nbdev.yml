@@ -1,0 +1,14 @@
+project:
+  output-dir: _docs
+
+website:
+  title: "OSSL to ring trial transfer"
+  site-url: "https://franckalbinet.github.io/ossl-rt-transfer"
+  description: "Test whether OSSL-trained MIR models transfer to the instruments of the soil spectroscopy ring trial"
+  repo-branch: main
+  repo-url: "https://github.com/franckalbinet/ossl-rt-transfer"
+
+format-links:
+  - html
+  - format: commonmark
+    text: Markdown

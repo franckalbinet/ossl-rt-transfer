@@ -1,0 +1,8 @@
+website:
+  sidebar:
+    contents:
+      - text: "Overview"
+        href: index.ipynb
+      - section: "Data and spectra"
+        contents:
+          - 00_data.ipynb
