@@ -6,3 +6,9 @@ website:
       - section: "Data and spectra"
         contents:
           - 00_data.ipynb
+      - section: "Pretraining"
+        contents:
+          - 01_pretrain.ipynb
+      - section: "Transfer"
+        contents:
+          - 02_zero_shot.ipynb
