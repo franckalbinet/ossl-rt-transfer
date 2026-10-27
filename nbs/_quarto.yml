@@ -15,8 +15,6 @@ format:
       body-width: 800px
       margin-width: 300px
       gutter-width: 1.0rem
-    keep-md: true
-  commonmark: default
 
 website:
   twitter-card: true
