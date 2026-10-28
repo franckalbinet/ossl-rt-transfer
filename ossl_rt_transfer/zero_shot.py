@@ -10,7 +10,7 @@ __all__ = ['zero_shot']
 # %% ../nbs/02_zero_shot.ipynb #4091e784
 import numpy as np, pandas as pd
 from soilspecdl.all import predict, regression_scores
-from .pretrain import rt_wns, log_props, snv_d1
+from .pretrain import rt_wns, log_props, preprocess
 
 # %% ../nbs/02_zero_shot.ipynb #62bbe27f
 def zero_shot(
@@ -21,5 +21,5 @@ def zero_shot(
     "Score `model` on the soils of one instrument that have a value of `prop`, with no adaptation to the instrument"
     X, y, _ = spectra.xy(prop)
     y = np.log1p(y.ravel()) if prop in log_props else y.ravel()
-    p = predict(model, snv_d1().fit_transform(X), rt_wns)
+    p = predict(model, preprocess().fit_transform(X), rt_wns)
     return {'n': len(y), **regression_scores(y, p, inv=np.expm1 if prop in log_props else None)}

@@ -7,7 +7,7 @@
 >
 > ### Work in progress
 >
-> No experiment has run yet. The design below is the plan.
+> Pretraining and the zero-shot experiment have run. The other experiments below are still to come.
 
 This project tests whether CNN models of soil mid-infrared (MIR) spectra, trained on the [Open Soil Spectral Library (OSSL)](https://explorer.soilspectroscopy.org/), transfer to other spectrometers. It uses the ring trial of [Safanelli et al. (2023)](https://doi.org/10.1016/j.geoderma.2023.116724), in which 20 laboratories scanned the same 70 soils, each with its own instrument and procedure. A Shimadzu instrument in Japan (`Hokudai`) also scanned 59 of the soils. The targets are organic carbon, clay, pH and exchangeable potassium (Kex).
 
@@ -30,6 +30,10 @@ The audience is soil scientists who transfer spectral models between instruments
 ## Notebooks
 
 - [`00_data`](https://franckalbinet.github.io/ossl-rt-transfer/data.html): loads the spectra and the instrument table, groups the near-duplicate soils, and lists the 38 ring-trial soils that are in OSSL.
+
+- [`01_pretrain`](https://franckalbinet.github.io/ossl-rt-transfer/pretrain.html): trains one CNN each for clay, pH and K on OSSL, without those 38 soils, on SNV spectra, with the training settings of `ossl-fuku-transfer` but 80 epochs instead of 20.
+
+- [`02_zero_shot`](https://franckalbinet.github.io/ossl-rt-transfer/zero_shot.html): scores the three models on all 21 ring-trial instruments, with no adaptation.
 
 ## Set-up
 
