@@ -12,3 +12,6 @@ website:
       - section: "Transfer"
         contents:
           - 02_zero_shot.ipynb
+      - section: "Cross-calibration"
+        contents:
+          - 03_instrument_model.ipynb

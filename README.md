@@ -35,6 +35,8 @@ The audience is soil scientists who transfer spectral models between instruments
 
 - [`02_zero_shot`](https://franckalbinet.github.io/ossl-rt-transfer/zero_shot.html): scores the three models on all 21 ring-trial instruments, with no adaptation.
 
+- [`03_instrument_model`](https://franckalbinet.github.io/ossl-rt-transfer/instrument_model.html): models the difference between each instrument and KSSL with a few physical effects shared by all soils, such as a gain, a baseline and a wavenumber shift.
+
 ## Set-up
 
 The project uses the soilspec packages ([soilspecdl](https://github.com/franckalbinet/soilspecdl), [soilspecdata](https://github.com/franckalbinet/soilspecdata) and [soilspectfm](https://github.com/franckalbinet/soilspectfm)) as editable installs from sibling folders:
