@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.10.19">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="Load the ring-trial spectra and instruments, group the near-duplicate soils, and find the ring-trial soils that are in OSSL">
+
+<title>Ring-trial data – OSSL to ring trial transfer</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-bf27225e3a48a9273f3daa8f8e829971.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-4a0132d6516ed1437d66c2742ecec8d8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Ring-trial data – OSSL to ring trial transfer">
+<meta property="og:description" content="Load the ring-trial spectra and instruments, group the near-duplicate soils, and find the ring-trial soils that are in OSSL">
+<meta property="og:site_name" content="OSSL to ring trial transfer">
+<meta name="twitter:title" content="Ring-trial data – OSSL to ring trial transfer">
+<meta name="twitter:description" content="Load the ring-trial spectra and instruments, group the near-duplicate soils, and find the ring-trial soils that are in OSSL">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">OSSL to ring trial transfer</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Data and spectra</a></li><li class="breadcrumb-item"><a href="./data.html">Ring-trial data</a></li></ol></nav>
+        <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Data and spectra</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Ring-trial data</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Pretraining</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrain.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Pretraining on OSSL</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Transfer</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./zero_shot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zero-shot transfer</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true">
+ <span class="menu-text">Cross-calibration</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./instrument_model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instrument model</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#data-location" id="toc-data-location" class="nav-link active" data-scroll-target="#data-location">Data location</a></li>
+  <li><a href="#spectra" id="toc-spectra" class="nav-link" data-scroll-target="#spectra">Spectra</a></li>
+  <li><a href="#instruments" id="toc-instruments" class="nav-link" data-scroll-target="#instruments">Instruments</a></li>
+  <li><a href="#near-duplicate-soils" id="toc-near-duplicate-soils" class="nav-link" data-scroll-target="#near-duplicate-soils">Near-duplicate soils</a></li>
+  <li><a href="#ring-trial-soils-in-ossl" id="toc-ring-trial-soils-in-ossl" class="nav-link" data-scroll-target="#ring-trial-soils-in-ossl">Ring-trial soils in OSSL</a></li>
+  <li><a href="#flagged-soils" id="toc-flagged-soils" class="nav-link" data-scroll-target="#flagged-soils">Flagged soils</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/franckalbinet/ossl-rt-transfer/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./data.html">Data and spectra</a></li><li class="breadcrumb-item"><a href="./data.html">Ring-trial data</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Ring-trial data</h1>
+</div>
+
+<div>
+  <div class="description">
+    Load the ring-trial spectra and instruments, group the near-duplicate soils, and find the ring-trial soils that are in OSSL
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="75bdb719" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-10-29T09:54:10.948115+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-10-29T09:54:10.950125+00:00&quot;,&quot;total&quot;:0.002014828999989504}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> soilspecdata.datasets.ossl <span class="im">import</span> load_ossl</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The ring-trial data are not public. The cells that read them are marked <code>#| rtdata</code>, and <code>nbdev-test</code> skips them unless you run <code>nbdev-test --flags rtdata</code>. The outputs on this page come from a local run.</p>
+<section id="data-location" class="level2">
+<h2 class="anchored" data-anchor-id="data-location">Data location</h2>
+<div id="eacc7975" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-10-29T09:54:10.951837+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-10-29T09:54:11.359484+00:00&quot;,&quot;total&quot;:0.4076546900000153}}" data-execution_count="4">
+<hr>
+<section id="rt_path" class="level3">
+<h3 class="anchored" data-anchor-id="rt_path">rt_path</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> rt_path()<span class="op">-&gt;</span>pathlib.Path: <span class="co"># Folder holding the ring-trial data</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>The <code>ringtrial</code> folder of <code>data_path()</code></em></p>
+</section>
+</div>
+<div id="025f6aea" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-10-29T09:54:11.359663+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-10-29T09:54:11.364079+00:00&quot;,&quot;total&quot;:0.004420154999991155}}" data-execution_count="5">
+<hr>
+<section id="data_path" class="level3">
+<h3 class="anchored" data-anchor-id="data_path">data_path</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> data_path()<span class="op">-&gt;</span>pathlib.Path: <span class="co"># Folder holding the data shared by the soilspec projects</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>The <code>SOILSPEC_DATA</code> folder if that variable is set, else <code>data/</code> in the soilspec workspace</em></p>
+</section>
+</div>
+<p>The soilspec workspace keeps the data in <code>data/</code>, beside the project folders. Set <code>SOILSPEC_DATA</code> to use a folder elsewhere. The ring-trial files are in its <code>ringtrial</code> folder, in the layout in which they were shared:</p>
+<div id="8706875a" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="cf">assert</span> rt_path().is_dir()</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="bu">sorted</span>(o.name <span class="cf">for</span> o <span class="kw">in</span> rt_path().iterdir() <span class="cf">if</span> <span class="kw">not</span> o.name.startswith((<span class="st">'.'</span>, <span class="st">'~'</span>)))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>['KSSL_soilMIRspectra_SNVplusSG1stDer.csv',
+ 'Spectrometers Metadata.xlsx',
+ 'drive-download-20231013T123706Z-001',
+ 'drive-download-20231013T123706Z-002']</code></pre>
+</div>
+</div>
+</section>
+<section id="spectra" class="level2">
+<h2 class="anchored" data-anchor-id="spectra">Spectra</h2>
+<p>soilspecdata’s <code>load_ringtrial</code> returns one <code>Spectra</code> per instrument, keyed by the laboratory’s <code>organization</code> name. Every <code>Spectra</code> has the same 70 soils, <code>RT_01</code> to <code>RT_70</code>, and the same wet chemistry as <code>source</code>. <code>Hokudai</code>, the Shimadzu instrument, has 59 of the soils:</p>
+<div id="f3ffe5cb" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rt <span class="op">=</span> load_ringtrial(rt_path())</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">len</span>(rt), <span class="dv">21</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>{k: v.spectra.shape <span class="cf">for</span> k, v <span class="kw">in</span> rt.items()}</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'Agrocares': (70, 1676),
+ 'Argonne': (70, 1676),
+ 'CSU_IL': (70, 1676),
+ 'ETH_alpha_1': (70, 1676),
+ 'ETH_alpha_2': (70, 1676),
+ 'ETH_vertex': (70, 1676),
+ 'IAEA_aug2022': (70, 1676),
+ 'KSSL': (70, 1676),
+ 'LandCare': (70, 1676),
+ 'Lesotho': (70, 1676),
+ 'MSU': (70, 1676),
+ 'OSU': (70, 1676),
+ 'Rothamsted': (70, 1676),
+ 'Scion': (70, 1676),
+ 'UGhent': (70, 1676),
+ 'UIUC': (70, 1676),
+ 'USP': (70, 1676),
+ 'UWisc_fine': (70, 1676),
+ 'Woodwell_alpha': (70, 1676),
+ 'Woodwell_vertex': (70, 1676),
+ 'Hokudai': (59, 1676)}</code></pre>
+</div>
+</div>
+</section>
+<section id="instruments" class="level2">
+<h2 class="anchored" data-anchor-id="instruments">Instruments</h2>
+<div id="24879cf9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-10-29T09:54:11.366632+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-10-29T09:54:11.370476+00:00&quot;,&quot;total&quot;:0.003848005000008925}}" data-execution_count="7">
+<hr>
+<section id="load_instruments" class="level3">
+<h3 class="anchored" data-anchor-id="load_instruments">load_instruments</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_instruments()<span class="op">-&gt;</span>pandas.DataFrame: <span class="co"># One row per ring-trial instrument, indexed by `organization`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Instrument metadata of the ring trial, with the spectral cluster of Safanelli et al.&nbsp;(2023)</em></p>
+</section>
+</div>
+<p><code>load_instruments</code> reads the sheet <code>compiled MIR metadata</code> of <code>Spectrometers Metadata.xlsx</code>. It keeps the instrument columns and leaves out the contact details. Its index matches the keys of <code>load_ringtrial</code>. <code>cluster</code> is the group, 1 to 4, in which Safanelli et al.&nbsp;(2023) placed each instrument by the similarity of its spectra. <code>Hokudai</code> is not in the sheet, so it has no cluster:</p>
+<div id="d6a3994a" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>inst <span class="op">=</span> load_instruments()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">sorted</span>(inst.index), <span class="bu">sorted</span>(k <span class="cf">for</span> k <span class="kw">in</span> rt <span class="cf">if</span> k <span class="op">!=</span> <span class="st">'Hokudai'</span>))</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>inst[[<span class="st">'name'</span>, <span class="st">'cluster'</span>, <span class="st">'model'</span>, <span class="st">'accessory'</span>, <span class="st">'resolution'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">name</th>
+<th data-quarto-table-cell-role="th">cluster</th>
+<th data-quarto-table-cell-role="th">model</th>
+<th data-quarto-table-cell-role="th">accessory</th>
+<th data-quarto-table-cell-role="th">resolution</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">organization</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">LandCare</th>
+<td>LandCare - Tensor II</td>
+<td>4</td>
+<td>Tensor II</td>
+<td>Bruker HTS-XT</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Woodwell_alpha</th>
+<td>Woodwell - Alpha II</td>
+<td>3</td>
+<td>Alpha II</td>
+<td>Bruker Alpha QuickSnap</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ETH_vertex</th>
+<td>ETHZ-SAE - Vertex 70</td>
+<td>4</td>
+<td>Vertex 70</td>
+<td>Bruker HTS-XT</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Argonne</th>
+<td>Argonne - PerkinElmer Spectrum 100</td>
+<td>2</td>
+<td>Spectrum 100</td>
+<td>Pike AutoDiff</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">UGhent</th>
+<td>UGhent - Agilent 4300</td>
+<td>2</td>
+<td>4300 Handheld FTIR</td>
+<td>Handheld FTIR</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Agrocares</th>
+<td>AgroCares - Alpha I</td>
+<td>3</td>
+<td>Alpha I</td>
+<td>Bruker Alpha QuickSnap</td>
+<td>8.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ETH_alpha_1</th>
+<td>ETHZ-SAE - Alpha I</td>
+<td>3</td>
+<td>Alpha I</td>
+<td>Bruker Alpha QuickSnap</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Woodwell_vertex</th>
+<td>Woodwell - Vertex 70</td>
+<td>3</td>
+<td>Vertex 70</td>
+<td>Pike AutoDiff</td>
+<td>2.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">IAEA_aug2022</th>
+<td>IAEA - Thermo Fisher Nicolet</td>
+<td>2</td>
+<td>Nicolet iS20</td>
+<td>Collector II Diffuse Reflectance Accessory</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">MSU</th>
+<td>MSU - Vertex 70</td>
+<td>4</td>
+<td>Vertex 70</td>
+<td>Bruker HTS-XT</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">UWisc_fine</th>
+<td>UWisc - Alpha II</td>
+<td>1</td>
+<td>Alpha II</td>
+<td>Bruker Front-facing accessory</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">UIUC</th>
+<td>UIUC - Termo Fisher Nicolet</td>
+<td>2</td>
+<td>Nicolet iS50</td>
+<td>Pike X, Y Autosampler</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Lesotho</th>
+<td>DAR - PerkinElmer FT-IR II</td>
+<td>2</td>
+<td>FT-IR II</td>
+<td>DRIFT</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">OSU</th>
+<td>OSU - Thermo Fisher Nicolet</td>
+<td>2</td>
+<td>Nicolet iS50</td>
+<td>Pike X,Y Autosampler</td>
+<td>8.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ETH_alpha_2</th>
+<td>ETHZ-SAE - Alpha II</td>
+<td>3</td>
+<td>Alpha II</td>
+<td>Bruker Alpha II QuickSnap DRIFT</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">KSSL</th>
+<td>KSSL - Vertex 70</td>
+<td>4</td>
+<td>Vertex 70</td>
+<td>Bruker HTS-XT</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">CSU_IL</th>
+<td>CSU-SoIL - Bruker Invenio-R</td>
+<td>4</td>
+<td>Invenio-R</td>
+<td>Bruker HTS-XT</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Scion</th>
+<td>Scion - Bruker Invenio-S</td>
+<td>4</td>
+<td>Invenio-S</td>
+<td>Bruker HTS-XT</td>
+<td>4.0</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Rothamsted</th>
+<td>Rothamsted - Bruker Tensor II</td>
+<td>4</td>
+<td>Tensor II</td>
+<td>HTS-XT</td>
+<td>4.0</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">USP</th>
+<td>USP - Alpha I</td>
+<td>3</td>
+<td>Alpha I</td>
+<td>Bruker Alpha QuickSnap</td>
+<td>2.0</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The IAEA instrument, which also measured the Fukushima soils of <code>ossl-fuku-transfer</code>, is in cluster 2 with the PerkinElmer, Agilent and other Thermo Nicolet instruments. KSSL, the largest part of OSSL, is in cluster 4:</p>
+<div id="b1ade0fc" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>inst.groupby(<span class="st">'cluster'</span>).size().to_dict(), inst.loc[[<span class="st">'IAEA_aug2022'</span>, <span class="st">'KSSL'</span>], <span class="st">'cluster'</span>].to_dict()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>({1: 1, 2: 6, 3: 6, 4: 7}, {'IAEA_aug2022': 2, 'KSSL': 4})</code></pre>
+</div>
+</div>
+</section>
+<section id="near-duplicate-soils" class="level2">
+<h2 class="anchored" data-anchor-id="near-duplicate-soils">Near-duplicate soils</h2>
+<div id="1fb152be" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-10-29T09:54:11.372474+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-10-29T09:54:11.376473+00:00&quot;,&quot;total&quot;:0.0040034080000168615}}" data-execution_count="9">
+<hr>
+<section id="near_dup_groups" class="level3">
+<h3 class="anchored" data-anchor-id="near_dup_groups">near_dup_groups</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> near_dup_groups(</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    spectra, <span class="co"># `Spectra` of one instrument</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    min_corr:<span class="bu">float</span><span class="op">=</span><span class="fl">0.9999</span>, <span class="co"># Smallest correlation of SNV spectra for two soils to join a group</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>numpy.ndarray: <span class="co"># Group label of each soil, in the order of `spectra.sample_ids`</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Group soils whose SNV spectra correlate above <code>min_corr</code>, directly or through other soils of the group</em></p>
+</section>
+</div>
+<p>Some ring-trial soils are near-duplicates: their spectra are almost the same, and so are their properties. A split must keep such soils on one side, or the test set holds soils that the model has seen in training. <code>near_dup_groups</code> links two soils when their SNV spectra correlate above <code>min_corr</code>, and gives each connected set of soils one label. On the KSSL instrument, three groups have more than one soil:</p>
+<div id="ca0fff39" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>groups <span class="op">=</span> near_dup_groups(rt[<span class="st">'KSSL'</span>])</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>ids <span class="op">=</span> rt[<span class="st">'KSSL'</span>].sample_ids</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>dups <span class="op">=</span> [<span class="bu">list</span>(ids[groups <span class="op">==</span> g]) <span class="cf">for</span> g <span class="kw">in</span> np.unique(groups) <span class="cf">if</span> (groups <span class="op">==</span> g).<span class="bu">sum</span>() <span class="op">&gt;</span> <span class="dv">1</span>]</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>test_eq(dups, [[<span class="st">'RT_04'</span>, <span class="st">'RT_05'</span>, <span class="st">'RT_07'</span>, <span class="st">'RT_13'</span>, <span class="st">'RT_15'</span>], [<span class="st">'RT_10'</span>, <span class="st">'RT_19'</span>], [<span class="st">'RT_24'</span>, <span class="st">'RT_25'</span>]])</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>dups</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>[['RT_04', 'RT_05', 'RT_07', 'RT_13', 'RT_15'],
+ ['RT_10', 'RT_19'],
+ ['RT_24', 'RT_25']]</code></pre>
+</div>
+</div>
+<p>The members of each group have similar properties, for example clay and pH:</p>
+<div id="eaf23911" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>rt[<span class="st">'KSSL'</span>].source.loc[[i <span class="cf">for</span> g <span class="kw">in</span> dups <span class="cf">for</span> i <span class="kw">in</span> g], [<span class="st">'clay_perc'</span>, <span class="st">'pH_H20'</span>, <span class="st">'potassium_cmolkg'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">clay_perc</th>
+<th data-quarto-table-cell-role="th">pH_H20</th>
+<th data-quarto-table-cell-role="th">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">sample_id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">RT_04</th>
+<td>17.10475</td>
+<td>6.5300</td>
+<td>0.49925</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">RT_05</th>
+<td>17.22985</td>
+<td>6.4700</td>
+<td>0.59977</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">RT_07</th>
+<td>17.07796</td>
+<td>6.5900</td>
+<td>0.48248</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">RT_13</th>
+<td>16.95715</td>
+<td>6.5300</td>
+<td>0.56302</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">RT_15</th>
+<td>15.98527</td>
+<td>6.6000</td>
+<td>0.61950</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">RT_10</th>
+<td>21.88833</td>
+<td>5.9025</td>
+<td>0.37097</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">RT_19</th>
+<td>21.09150</td>
+<td>6.0300</td>
+<td>0.40527</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">RT_24</th>
+<td>12.71177</td>
+<td>5.8500</td>
+<td>0.18957</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">RT_25</th>
+<td>12.99189</td>
+<td>5.8800</td>
+<td>0.18747</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The threshold is close to the data: the most similar pair of soils outside these groups correlates at 0.99987. The groups come from the KSSL spectra, the reference instrument of the paper, and the same labels apply on every instrument.</p>
+</section>
+<section id="ring-trial-soils-in-ossl" class="level2">
+<h2 class="anchored" data-anchor-id="ring-trial-soils-in-ossl">Ring-trial soils in OSSL</h2>
+<p>60 of the ring-trial soils come from KSSL, the largest part of OSSL. A model pretrained on all of OSSL has seen the ring-trial soils that OSSL contains, with their properties. Its scores on those soils are too good. <code>ossl_matches</code> finds, for each ring-trial soil, the OSSL sample whose SNV spectrum correlates best with it. It then compares their clay, pH and exchangeable K. A missing ring-trial value counts as the same.</p>
+<div id="3b946935" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-10-29T09:54:11.380125+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-10-29T09:54:11.385158+00:00&quot;,&quot;total&quot;:0.005038565000006656}}" data-execution_count="11">
+<hr>
+<section id="ossl_matches" class="level3">
+<h3 class="anchored" data-anchor-id="ossl_matches">ossl_matches</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ossl_matches(</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>    rt_spectra, <span class="co"># `Spectra` of one ring-trial instrument</span></span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    ossl_mir, <span class="co"># OSSL MIR `Spectra` on the same wavenumbers, such as `load_ossl().mir(650, 4000)`</span></span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    tol:<span class="bu">float</span><span class="op">=</span><span class="fl">0.001</span>, <span class="co"># Largest difference for two property values to count as the same</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>pandas.DataFrame: <span class="co"># One row per ring-trial soil, indexed by sample ID</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>The OSSL sample whose SNV spectrum correlates best with each ring-trial soil, and whether their clay, pH and K are the same</em></p>
+</section>
+</div>
+<p>On the KSSL instrument, 38 soils have an OSSL match with the same clay, pH and K. All 38 are KSSL soils. None of the 10 NAPT soils is in OSSL. <code>ossl_overlap</code> lists the 38 OSSL samples, which pretraining leaves out:</p>
+<div id="db7302c3" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>ossl_mir <span class="op">=</span> load_ossl().mir(<span class="dv">650</span>, <span class="dv">4000</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>matches <span class="op">=</span> ossl_matches(rt[<span class="st">'KSSL'</span>], ossl_mir)</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">sorted</span>(matches.ossl_id[matches.same_props]), ossl_overlap)</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>matches.groupby(rt[<span class="st">'KSSL'</span>].source.loc[matches.index, <span class="st">'source'</span>]).same_props.<span class="bu">sum</span>().to_dict()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>{'KSSL': 38, 'NAPT': 0}</code></pre>
+</div>
+</div>
+<p>The 38 matches correlate at 0.99999 or more. They differ by about 0.1% of the spectrum. It is not known whether they are two scans of the same soil or one scan processed twice. The best matches of the other soils correlate at up to 0.99992, for RT_10 and RT_23, but their properties differ. They stay in pretraining:</p>
+<div id="12c6d5f3" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>matches.groupby(<span class="st">'same_props'</span>)[<span class="st">'corr'</span>].agg([<span class="st">'count'</span>, <span class="st">'min'</span>, <span class="st">'max'</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">count</th>
+<th data-quarto-table-cell-role="th">min</th>
+<th data-quarto-table-cell-role="th">max</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">same_props</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">False</th>
+<td>32</td>
+<td>0.992424</td>
+<td>0.999915</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">True</th>
+<td>38</td>
+<td>0.999991</td>
+<td>0.999999</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="flagged-soils" class="level2">
+<h2 class="anchored" data-anchor-id="flagged-soils">Flagged soils</h2>
+<p>The outlier analysis of <a href="https://fr.anckalbi.net/tidy-mirs/5-outlier-detection.html">tidy-mirs</a> flags four ring-trial soils. It measures Mahalanobis distances in a PCA of the spectra, after SNV and a Savitzky-Golay filter, and in the space of clay and organic carbon. Both cutoffs were set by eye, in a gap of the distances. Flagged means unusual, not wrong. The four soils stay in every analysis, and the error analysis of the transfer experiments tests whether any of them has a bad scan or a wet-chemistry error. <code>rt_flagged</code> gives the reason for each soil:</p>
+<p>Three of them are rich in organic carbon, with 11% to 49%. RT_42, at 49%, also has the lowest pH of the ring trial:</p>
+<div id="66e09ff7" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>rt[<span class="st">'KSSL'</span>].source.loc[<span class="bu">list</span>(rt_flagged), [<span class="st">'source'</span>, <span class="st">'clay_perc'</span>, <span class="st">'pH_H20'</span>, <span class="st">'potassium_cmolkg'</span>, <span class="st">'carbon_org_perc'</span>]]</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">source</th>
+<th data-quarto-table-cell-role="th">clay_perc</th>
+<th data-quarto-table-cell-role="th">pH_H20</th>
+<th data-quarto-table-cell-role="th">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">carbon_org_perc</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">sample_id</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">RT_42</th>
+<td>KSSL</td>
+<td>NaN</td>
+<td>3.3475</td>
+<td>0.52326</td>
+<td>49.10375</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">RT_44</th>
+<td>KSSL</td>
+<td>0.00000</td>
+<td>8.2300</td>
+<td>NaN</td>
+<td>NaN</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">RT_09</th>
+<td>KSSL</td>
+<td>12.91032</td>
+<td>5.1875</td>
+<td>1.65621</td>
+<td>16.24090</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">RT_23</th>
+<td>KSSL</td>
+<td>0.92417</td>
+<td>6.0025</td>
+<td>0.36717</td>
+<td>10.94096</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>RT_44 is one of the 38 soils in <code>ossl_overlap</code>. Its clay is 0.0 in the ring-trial data, and also 0 in OSSL, while tidy-mirs reports it as missing. The 0.0 may be a code for a missing value.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/franckalbinet\.github\.io\/ossl-rt-transfer");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+     var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+        }
+      }
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          let top = null;
+          let height = null;
+          let parent = null;
+          if (lineIds.length > 0) {
+              //compute the position of the single el (top and bottom and make a div)
+              const el = window.document.getElementById(lineIds[0]);
+              top = el.offsetTop;
+              height = el.offsetHeight;
+              parent = el.parentElement.parentElement;
+            if (lineIds.length > 1) {
+              const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+              const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+              height = bottom - top;
+            }
+            if (top !== null && height !== null && parent !== null) {
+              // cook up a div (if necessary) and position it 
+              let div = window.document.getElementById("code-annotation-line-highlight");
+              if (div === null) {
+                div = window.document.createElement("div");
+                div.setAttribute("id", "code-annotation-line-highlight");
+                div.style.position = 'absolute';
+                parent.appendChild(div);
+              }
+              div.style.top = top - 2 + "px";
+              div.style.height = height + 4 + "px";
+              div.style.left = 0;
+              let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+              if (gutterDiv === null) {
+                gutterDiv = window.document.createElement("div");
+                gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+                gutterDiv.style.position = 'absolute';
+                const codeCell = window.document.getElementById(targetCell);
+                const gutter = codeCell.querySelector('.code-annotation-gutter');
+                gutter.appendChild(gutterDiv);
+              }
+              gutterDiv.style.top = top - 2 + "px";
+              gutterDiv.style.height = height + 4 + "px";
+            }
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/franckalbinet/ossl-rt-transfer/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

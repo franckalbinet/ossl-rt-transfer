@@ -1,0 +1,23 @@
+<?xml version='1.0' encoding='utf-8'?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://franckalbinet.github.io/ossl-rt-transfer/data.html</loc>
+    <lastmod>2026-10-29T09:54:11.443Z</lastmod>
+  </url>
+  <url>
+    <loc>https://franckalbinet.github.io/ossl-rt-transfer/index.html</loc>
+    <lastmod>2026-10-29T09:54:11.490Z</lastmod>
+  </url>
+<url>
+    <loc>https://franckalbinet.github.io/ossl-rt-transfer/pretrain.html</loc>
+    <lastmod>2026-10-29T09:54:13.230Z</lastmod>
+  </url>
+<url>
+    <loc>https://franckalbinet.github.io/ossl-rt-transfer/instrument_model.html</loc>
+    <lastmod>2026-10-29T09:54:13.413Z</lastmod>
+  </url>
+<url>
+    <loc>https://franckalbinet.github.io/ossl-rt-transfer/zero_shot.html</loc>
+    <lastmod>2026-10-29T09:54:13.667Z</lastmod>
+  </url>
+</urlset>
