@@ -49,7 +49,7 @@ class InstrumentModel(torch.nn.Module):
 
     def warp(self, x):
         n = x.shape[-1]
-        src = (torch.arange(n, dtype=x.dtype) + self.shift[0] + self.shift[1]*self.nu*n/2).clamp(0, n-1)
+        src = (torch.arange(n, dtype=x.dtype) + self.shift[0] + self.shift[1]*self.nu*(n-1)/2).clamp(0, n-1)
         i0 = src.floor().long().clamp(max=n-2); f = src - i0
         return x[..., i0]*(1-f) + x[..., i0+1]*f
 
@@ -86,25 +86,35 @@ def paired_spectra(
 
 def _mask(wn): return torch.tensor((wn < co2_region[0]) | (wn > co2_region[1]))
 
+def _loss(m, Xr, Xi, mask): return ((snv_t(m(Xr)) - snv_t(Xi))[:, mask]**2).mean()
+
+def _fit(m, Xr, Xi, mask, iters):
+    opt = torch.optim.LBFGS(m.parameters(), max_iter=iters, line_search_fn='strong_wolfe')
+    def closure():
+        opt.zero_grad()
+        loss = _loss(m, Xr, Xi, mask)
+        loss.backward()
+        return loss
+    opt.step(closure)
+    with torch.no_grad(): return _loss(m, Xr, Xi, mask).item()
+
 def fit_instrument(
     wn, # Wavenumbers
     Xr, # Reference spectra
     Xi, # Spectra of the instrument, for the same soils
     effects, # Effects of `InstrumentModel`
     iters=300, # Iterations of L-BFGS
+    starts_cm=range(-4, 5), # Starting values of the shift, in cm⁻¹, when `effects` has 'shift'
 )->InstrumentModel:
-    "Fit an `InstrumentModel` that turns `Xr` into `Xi`, on SNV spectra without the CO₂ band"
-    m = InstrumentModel(wn, effects)
-    if not effects: return m
+    "Fit the `InstrumentModel` with the lowest loss that turns `Xr` into `Xi`, on SNV spectra without the CO₂ band"
+    if not effects: return InstrumentModel(wn, effects)
     Xr, Xi, mask = torch.tensor(Xr), torch.tensor(Xi), _mask(wn)
-    opt = torch.optim.LBFGS(m.parameters(), max_iter=iters, line_search_fn='strong_wolfe')
-    def closure():
-        opt.zero_grad()
-        loss = ((snv_t(m(Xr)) - snv_t(Xi))[:, mask]**2).mean()
-        loss.backward()
-        return loss
-    opt.step(closure)
-    return m
+    fits = []
+    for s in (starts_cm if 'shift' in effects else [0]):
+        m = InstrumentModel(wn, effects)
+        with torch.no_grad(): m.shift[0] = s/m.dw
+        fits.append((_fit(m, Xr, Xi, mask, iters), m))
+    return min(fits, key=lambda o: o[0])[1]
 
 def residuals(m, wn, Xr, Xi)->np.ndarray: # One row per soil, without the CO₂ band
     "SNV of the modelled spectra minus SNV of the measured ones"

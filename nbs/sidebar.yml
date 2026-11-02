@@ -15,3 +15,5 @@ website:
       - section: "Cross-calibration"
         contents:
           - 03_instrument_model.ipynb
+          - 04_sensitivity.ipynb
+          - 05_augment.ipynb

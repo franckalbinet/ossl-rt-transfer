@@ -11,7 +11,7 @@ __all__ = ['rt_wns', 'log_props', 'ossl_xy', 'preprocess', 'model_dir', 'pretrai
 from pathlib import Path
 import numpy as np, pandas as pd
 from soilspectfm.preprocessing import SNV
-from soilspecdl.all import SpectralCNN, train_or_load, load_weights
+from soilspecdl.all import SpectralCNN, train_or_load, load_weights, BatchSNV
 from .data import data_path, ossl_props, ossl_overlap
 
 # %% ../nbs/01_pretrain.ipynb #f873daf2
@@ -48,9 +48,10 @@ def pretrain(
     seed=42, # Seed for the validation split and the training
     epochs=80, # Number of one-cycle epochs
     lr=1e-3, # Maximum learning rate
+    tfm=BatchSNV(), # Batch transform, or a list of transforms applied in order
 )->SpectralCNN: # The trained model, on the CPU
-    "Train a `SpectralCNN` on OSSL, or load the weights that an earlier run saved under `fname`"
-    return train_or_load(model_dir()/f'{fname}.pth', X, y, rt_wns, epochs=epochs, lr=lr, seed=seed)
+    "Train a `SpectralCNN` on OSSL with the batch transforms `tfm`, or load the weights that an earlier run saved under `fname`"
+    return train_or_load(model_dir()/f'{fname}.pth', X, y, rt_wns, epochs=epochs, lr=lr, seed=seed, tfm=tfm)
 
 def load_pretrained(fname)->SpectralCNN: # The model, on the CPU
     "Load the weights that `pretrain` saved under `fname`"
