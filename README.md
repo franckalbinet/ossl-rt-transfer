@@ -27,7 +27,7 @@ The audience is soil scientists who transfer spectral models between instruments
   1.  Zero-shot (`02_zero_shot`): the OSSL models on every instrument, with no adaptation. The comparison with the paper’s Cubist, MBL and PLSR transfer results is not done yet.
   2.  Instrument model (`03_instrument_model`): the difference between each instrument and KSSL, modelled with a few physical effects that all its soils share.
   3.  Sensitivity (`04_sensitivity`): how much the predictions change under each of these effects.
-  4.  Augmentation (`05_augment`): pretraining with random instrument effects applied to the OSSL spectra, then zero-shot scoring on every instrument.
+  4.  Augmentation (`05_augment`, `06_aug_pretrain`): pretraining with random instrument effects applied to the OSSL spectra, then zero-shot scoring on every instrument.
   5.  Fine-tuning: fine-tuning on the soils of one instrument, and ridge regression on frozen block-4 features, against PLSR trained only on those soils, with growing numbers of training soils. The PLSR preprocessing is that of mirzai: SNV, a first-derivative Savitzky-Golay filter and removal of the CO₂ band. The gains per instrument are compared with the paper’s instrument clusters and spectral dissimilarity.
 - Aim: to understand what changes in the CNN under augmentation and fine-tuning, not to rank the methods by one score.
 
@@ -39,6 +39,7 @@ The audience is soil scientists who transfer spectral models between instruments
 - [`03_instrument_model`](https://franckalbinet.github.io/ossl-rt-transfer/instrument_model.html): models the difference between each instrument and KSSL with a few physical effects shared by all soils, such as a gain, a baseline and a wavenumber shift.
 - [`04_sensitivity`](https://franckalbinet.github.io/ossl-rt-transfer/sensitivity.html): measures how much the predictions of the three models change when one physical instrument effect, such as a wavenumber shift or a broadening, is applied to OSSL spectra.
 - [`05_augment`](https://franckalbinet.github.io/ossl-rt-transfer/augment.html): applies random shift, stretch, broadening, contrast, gain and baseline to OSSL spectra during pretraining, one transform for each effect, and compares the clay and K models with and without them.
+- [`06_aug_pretrain`](https://franckalbinet.github.io/ossl-rt-transfer/aug_pretrain.html): finds how many epochs the augmented clay and K models need, and scores the augmented models that fine-tuning will start from.
 
 ## Set-up
 
