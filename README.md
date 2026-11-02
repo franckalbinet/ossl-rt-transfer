@@ -7,7 +7,7 @@
 >
 > ### Work in progress
 >
-> Pretraining, the zero-shot experiment, the instrument model, the sensitivity check and the augmentation have run. The other experiments below are still to come.
+> Pretraining, the zero-shot experiment, the instrument model, the sensitivity check, the augmentation and fine-tuning on two instruments have run. The other experiments below are still to come.
 
 This project tests whether CNN models of soil mid-infrared (MIR) spectra, trained on the [Open Soil Spectral Library (OSSL)](https://explorer.soilspectroscopy.org/), transfer to other spectrometers. It uses the ring trial of [Safanelli et al. (2023)](https://doi.org/10.1016/j.geoderma.2023.116724), in which 20 laboratories scanned the same 70 soils, each with its own instrument and procedure. A Shimadzu instrument in Japan (`Hokudai`) also scanned 59 of the soils. The targets are organic carbon, clay, pH and exchangeable potassium (Kex).
 
@@ -28,7 +28,7 @@ The audience is soil scientists who transfer spectral models between instruments
   2.  Instrument model (`03_instrument_model`): the difference between each instrument and KSSL, modelled with a few physical effects that all its soils share.
   3.  Sensitivity (`04_sensitivity`): how much the predictions change under each of these effects.
   4.  Augmentation (`05_augment`, `06_aug_pretrain`): pretraining with random instrument effects applied to the OSSL spectra, then zero-shot scoring on every instrument.
-  5.  Fine-tuning: fine-tuning on the soils of one instrument, and ridge regression on frozen block-4 features, against PLSR trained only on those soils, with growing numbers of training soils. The PLSR preprocessing is that of mirzai: SNV, a first-derivative Savitzky-Golay filter and removal of the CO₂ band. The gains per instrument are compared with the paper’s instrument clusters and spectral dissimilarity.
+  5.  Fine-tuning (`07_finetune`): fine-tuning on the soils of one instrument, and ridge regression on frozen block-4 features, from three pretrained models, against PLSR trained only on those soils. The PLSR preprocessing is that of mirzai: SNV, a first-derivative Savitzky-Golay filter and removal of the CO₂ band. It has run for K and clay on KSSL and IAEA. The other instruments, growing numbers of training soils, and the comparison of the gains with the paper’s instrument clusters and spectral dissimilarity are not done yet.
 - Aim: to understand what changes in the CNN under augmentation and fine-tuning, not to rank the methods by one score.
 
 ## Notebooks
@@ -40,6 +40,7 @@ The audience is soil scientists who transfer spectral models between instruments
 - [`04_sensitivity`](https://franckalbinet.github.io/ossl-rt-transfer/sensitivity.html): measures how much the predictions of the three models change when one physical instrument effect, such as a wavenumber shift or a broadening, is applied to OSSL spectra.
 - [`05_augment`](https://franckalbinet.github.io/ossl-rt-transfer/augment.html): applies random shift, stretch, broadening, contrast, gain and baseline to OSSL spectra during pretraining, one transform for each effect, and compares the clay and K models with and without them.
 - [`06_aug_pretrain`](https://franckalbinet.github.io/ossl-rt-transfer/aug_pretrain.html): finds how many epochs the augmented clay and K models need, and scores the augmented models that fine-tuning will start from.
+- [`07_finetune`](https://franckalbinet.github.io/ossl-rt-transfer/finetune.html): fine-tunes the clay and K models on the KSSL and IAEA soils from three starting models, and compares fine-tuning, ridge regression on frozen features, zero-shot and PLSR, against wet chemistry and against the KSSL prediction.
 
 ## Set-up
 
