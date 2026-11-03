@@ -14,6 +14,7 @@ website:
           - 02_zero_shot.ipynb
           - 07_finetune.ipynb
           - 08_recalibrate.ipynb
+          - 09_all_labs.ipynb
       - section: "Cross-calibration"
         contents:
           - 03_instrument_model.ipynb

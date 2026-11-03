@@ -6,7 +6,7 @@ Docs: https://franckalbinet.github.io/ossl-rt-transfer/finetune.html.md"""
 
 # %% auto #0
 __all__ = ['rt_xy', 'soil_folds', 'plsr', 'fit_plsr', 'finetune', 'ridge_block4', 'choose_epochs', 'cv_cnn', 'cv_plsr',
-           'paired_test', 'cached']
+           'paired_test', 'cached', 'repeat_scores', 'group_errors']
 
 # %% ../nbs/07_finetune.ipynb #30804b9e
 import copy
@@ -20,7 +20,7 @@ from sklearn.model_selection import GridSearchCV, GroupKFold
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 from soilspectfm.preprocessing import SNV, SavitzkyGolay
-from soilspecdl.all import BatchSNV, CutCNN, get_spectral_dls, group_folds, predict, ridge_head, spectral_learner
+from soilspecdl.all import BatchSNV, CutCNN, get_spectral_dls, group_folds, predict, regression_scores, ridge_head, spectral_learner
 from .pretrain import rt_wns, preprocess, log_props, model_dir
 from .instrument_model import co2_region
 
@@ -169,3 +169,24 @@ def cached(
     if fn.exists(): return pd.read_csv(fn, index_col=0)
     fn.parent.mkdir(parents=True, exist_ok=True)
     df = f(); df.to_csv(fn); return df
+
+# %% ../nbs/07_finetune.ipynb #820d6e75
+def repeat_scores(
+    preds:pd.DataFrame, # Held-out predictions, with columns `property`, `repeat`, `y` and `pred`
+    keys=('instrument', 'property', 'start', 'method'), # Columns that define a group of rows
+)->pd.DataFrame: # Scores of `regression_scores`, one row per group and repeat
+    "Scores of each repeat for each group of `keys`, each repeat pooling the held-out predictions of its folds"
+    keys = list(keys)
+    def f(d):
+        inv = np.expm1 if d.name[keys.index('property')] in log_props else None
+        return pd.DataFrame({r: regression_scores(e.y, e.pred, inv=inv) for r, e in d.groupby('repeat')}).T.rename_axis('repeat')
+    return preds.groupby(keys).apply(f, include_groups=False)
+
+def group_errors(
+    preds:pd.DataFrame, # Held-out predictions, with columns `sample_id`, `y` and `pred`
+    groups:pd.Series, # Near-duplicate group of each soil, indexed by sample id
+    keys=('instrument', 'property', 'start', 'method'), # Columns that define a group of rows
+)->pd.Series: # Mean squared error, indexed by `keys` and `group`
+    "Mean squared error on the model scale of each near-duplicate group, over its soils and the repeats"
+    return (preds.assign(group=preds.sample_id.map(groups), se=(preds.pred - preds.y)**2)
+            .groupby(list(keys) + ['group']).se.mean())
