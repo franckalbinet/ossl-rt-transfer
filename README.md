@@ -28,7 +28,7 @@ The audience is soil scientists who transfer spectral models between instruments
   2.  Instrument model (`03_instrument_model`): the difference between each instrument and KSSL, modelled with a few physical effects that all its soils share.
   3.  Sensitivity (`04_sensitivity`): how much the predictions change under each of these effects.
   4.  Augmentation (`05_augment`, `06_aug_pretrain`): pretraining with random instrument effects applied to the OSSL spectra, then zero-shot scoring on every instrument.
-  5.  Fine-tuning (`07_finetune`): fine-tuning on the soils of one instrument, and ridge regression on frozen block-4 features, from three pretrained models, against PLSR trained only on those soils. The PLSR preprocessing is that of mirzai: SNV, a first-derivative Savitzky-Golay filter and removal of the CO₂ band. It has run for K and clay on KSSL and IAEA. The other instruments, growing numbers of training soils, and the comparison of the gains with the paper’s instrument clusters and spectral dissimilarity are not done yet.
+  5.  Fine-tuning (`07_finetune`): fine-tuning on the soils of one instrument, and ridge regression on frozen block-4 features, from three pretrained models, against PLSR trained only on those soils. The PLSR preprocessing is that of mirzai: SNV, a first-derivative Savitzky-Golay filter and removal of the CO₂ band. It has run for K and clay on KSSL and IAEA. `08_recalibrate` compares it with linear recalibration, AdaBN and a refit of the head. The other instruments, growing numbers of training soils, and the comparison of the gains with the paper’s instrument clusters and spectral dissimilarity are not done yet.
 - Aim: to understand what changes in the CNN under augmentation and fine-tuning, not to rank the methods by one score.
 
 ## Notebooks
@@ -41,6 +41,7 @@ The audience is soil scientists who transfer spectral models between instruments
 - [`05_augment`](https://franckalbinet.github.io/ossl-rt-transfer/augment.html): applies random shift, stretch, broadening, contrast, gain and baseline to OSSL spectra during pretraining, one transform for each effect, and compares the clay and K models with and without them.
 - [`06_aug_pretrain`](https://franckalbinet.github.io/ossl-rt-transfer/aug_pretrain.html): finds how many epochs the augmented clay and K models need, and scores the augmented models that fine-tuning will start from.
 - [`07_finetune`](https://franckalbinet.github.io/ossl-rt-transfer/finetune.html): fine-tunes the clay and K models on the KSSL and IAEA soils from three starting models, and compares fine-tuning, ridge regression on frozen features, zero-shot and PLSR, against wet chemistry and against the KSSL prediction.
+- [`08_recalibrate`](https://franckalbinet.github.io/ossl-rt-transfer/recalibrate.html): compares fine-tuning with cheaper corrections fitted on the same soils: a bias, or a slope and bias, on the zero-shot predictions, AdaBN, and a refit of the head.
 
 ## Set-up
 

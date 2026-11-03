@@ -6,10 +6,11 @@ Docs: https://franckalbinet.github.io/ossl-rt-transfer/finetune.html.md"""
 
 # %% auto #0
 __all__ = ['rt_xy', 'soil_folds', 'plsr', 'fit_plsr', 'finetune', 'ridge_block4', 'choose_epochs', 'cv_cnn', 'cv_plsr',
-           'paired_test']
+           'paired_test', 'cached']
 
 # %% ../nbs/07_finetune.ipynb #30804b9e
 import copy
+from pathlib import Path
 import numpy as np, pandas as pd
 from fastai.torch_core import set_seed
 from fastai.metrics import AccumMetric, R2Score
@@ -20,7 +21,7 @@ from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import FunctionTransformer
 from soilspectfm.preprocessing import SNV, SavitzkyGolay
 from soilspecdl.all import BatchSNV, CutCNN, get_spectral_dls, group_folds, predict, ridge_head, spectral_learner
-from .pretrain import rt_wns, preprocess, log_props
+from .pretrain import rt_wns, preprocess, log_props, model_dir
 from .instrument_model import co2_region
 
 # %% ../nbs/07_finetune.ipynb #a6206171
@@ -156,3 +157,15 @@ def paired_test(
     "Wilcoxon signed-rank test of paired errors of two methods"
     a, b = a.align(b, join='inner')
     return dict(n=len(a), A=float(a.mean()), B=float(b.mean()), A_better=float((a < b).mean()), p=float(wilcoxon(a, b).pvalue))
+
+# %% ../nbs/07_finetune.ipynb #d82abc70
+def cached(
+    fname, # File name, without the `.csv` suffix
+    f, # Function that computes the DataFrame
+    path=None, # Folder of the file, by default `finetune` in `model_dir()`
+)->pd.DataFrame: # The saved DataFrame, or the result of `f`
+    "Load the DataFrame saved under `fname`, or compute it with `f` and save it"
+    fn = Path(path or model_dir()/'finetune')/f'{fname}.csv'
+    if fn.exists(): return pd.read_csv(fn, index_col=0)
+    fn.parent.mkdir(parents=True, exist_ok=True)
+    df = f(); df.to_csv(fn); return df
