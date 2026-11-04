@@ -1,0 +1,1936 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="How much the predictions of the OSSL models change when one physical instrument effect is applied to OSSL spectra">
+
+<title>Sensitivity to instrument effects – OSSL to ring trial transfer</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ae2d6264e000b8c4f084cd30789b847.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Sensitivity to instrument effects – OSSL to ring trial transfer">
+<meta property="og:description" content="How much the predictions of the OSSL models change when one physical instrument effect is applied to OSSL spectra">
+<meta property="og:site_name" content="OSSL to ring trial transfer">
+<meta name="twitter:title" content="Sensitivity to instrument effects – OSSL to ring trial transfer">
+<meta name="twitter:description" content="How much the predictions of the OSSL models change when one physical instrument effect is applied to OSSL spectra">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">OSSL to ring trial transfer</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./instrument_model.html">Cross-calibration</a></li><li class="breadcrumb-item"><a href="./sensitivity.html">Sensitivity to instrument effects</a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Section">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Data and spectra</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ring-trial data</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Pretraining</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrain.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Pretraining on OSSL</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Transfer</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./zero_shot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zero-shot transfer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finetune.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fine-tuning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recalibrate.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Recalibration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./all_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">All labs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./where_it_fails.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Where transfer fails</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Cross-calibration</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./instrument_model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instrument model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Sensitivity to instrument effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./augment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instrument augmentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aug_pretrain.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Augmented pretraining</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#effects-in-physical-units" id="toc-effects-in-physical-units" class="nav-link active" data-scroll-target="#effects-in-physical-units">Effects in physical units</a></li>
+  <li><a href="#ossl-validation-spectra" id="toc-ossl-validation-spectra" class="nav-link" data-scroll-target="#ossl-validation-spectra">OSSL validation spectra</a></li>
+  <li><a href="#wavenumber-shift" id="toc-wavenumber-shift" class="nav-link" data-scroll-target="#wavenumber-shift">Wavenumber shift</a></li>
+  <li><a href="#wavenumber-stretch" id="toc-wavenumber-stretch" class="nav-link" data-scroll-target="#wavenumber-stretch">Wavenumber stretch</a></li>
+  <li><a href="#broadening" id="toc-broadening" class="nav-link" data-scroll-target="#broadening">Broadening</a></li>
+  <li><a href="#contrast" id="toc-contrast" class="nav-link" data-scroll-target="#contrast">Contrast</a></li>
+  <li><a href="#gain-and-baseline" id="toc-gain-and-baseline" class="nav-link" data-scroll-target="#gain-and-baseline">Gain and baseline</a></li>
+  <li><a href="#measured-differences" id="toc-measured-differences" class="nav-link" data-scroll-target="#measured-differences">Measured differences</a></li>
+  <li><a href="#a-soil-specific-part-shared-by-the-labs" id="toc-a-soil-specific-part-shared-by-the-labs" class="nav-link" data-scroll-target="#a-soil-specific-part-shared-by-the-labs">A soil-specific part shared by the labs</a></li>
+  <li><a href="#consequences-for-augmentation" id="toc-consequences-for-augmentation" class="nav-link" data-scroll-target="#consequences-for-augmentation">Consequences for augmentation</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/franckalbinet/ossl-rt-transfer/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./instrument_model.html">Cross-calibration</a></li><li class="breadcrumb-item"><a href="./sensitivity.html">Sensitivity to instrument effects</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Sensitivity to instrument effects</h1>
+</div>
+
+<div>
+  <div class="description">
+    How much the predictions of the OSSL models change when one physical instrument effect is applied to OSSL spectra
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="eee94230" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.447720+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:17:53.448698+00:00&quot;,&quot;total&quot;:0.0009820060000151898}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> functools <span class="im">import</span> partial</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.metrics <span class="im">import</span> r2_score</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> soilspecdl.<span class="bu">all</span> <span class="im">import</span> SpectralCNN, get_splitter</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> soilspecdata.datasets.ossl <span class="im">import</span> load_ossl</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> soilspecdata.datasets.ringtrial <span class="im">import</span> load_ringtrial</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ossl_rt_transfer.data <span class="im">import</span> rt_path, ossl_props, ossl_overlap, ossl_matches</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ossl_rt_transfer.pretrain <span class="im">import</span> ossl_xy, load_pretrained, pretrain_history</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ossl_rt_transfer.instrument_model <span class="im">import</span> fit_instrument, paired_spectra</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The cells that read OSSL and the ring-trial data are marked <code>#| rtdata</code>. The outputs on this page come from a local run.</p>
+<p>An augmentation engine for pretraining has to cover the instrument effects that the OSSL models react to most. This notebook applies each effect of <code>InstrumentModel</code> alone to OSSL validation spectra, at magnitudes that real instruments can have, and measures how much the predictions of the 80-epoch models of <code>01_pretrain</code> change. Two measured differences give a scale: the difference spectrum D between the KSSL ring-trial spectra and the OSSL spectra of the same soils, and the effects fitted for MSU, IAEA and OSU in <code>03_instrument_model</code>.</p>
+<section id="effects-in-physical-units" class="level2">
+<h2 class="anchored" data-anchor-id="effects-in-physical-units">Effects in physical units</h2>
+<p><code>InstrumentModel</code> sets its shift in points and its filter width as a logarithm, which suits fitting. <code>perturb</code> sets the same effects in physical units, and applies only the effects whose arguments differ from their defaults:</p>
+<div id="06298fd9" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.450913+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:17:53.454790+00:00&quot;,&quot;total&quot;:0.00388068399996655}}" data-execution_count="4">
+<hr>
+<section id="perturb" class="level3">
+<h3 class="anchored" data-anchor-id="perturb">perturb</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> perturb(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    X, <span class="co"># Absorbance spectra on `rt_wns`, one per row</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    shift_cm:<span class="bu">float</span><span class="op">=</span><span class="fl">0.0</span>, <span class="co"># Displacement of every band, in cm⁻¹, positive towards higher wavenumbers</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    stretch:<span class="bu">float</span><span class="op">=</span><span class="fl">0.0</span>, <span class="co"># Displacement of each band as a fraction of its wavenumber</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    sigma_cm:<span class="bu">float</span><span class="op">=</span><span class="fl">0.0</span>, <span class="co"># Standard deviation of a Gaussian broadening filter, in cm⁻¹</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    gamma:<span class="bu">float</span><span class="op">=</span><span class="fl">1.0</span>, <span class="co"># Contrast: absorbance raised to this power</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    gain:NoneType<span class="op">=</span><span class="va">None</span>, <span class="co"># B-spline coefficients added to a gain of 1, as in `InstrumentModel`</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>    baseline:NoneType<span class="op">=</span><span class="va">None</span>, <span class="co"># B-spline coefficients of an additive baseline, in absorbance</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>numpy.ndarray: <span class="co"># Perturbed spectra</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Apply the effects of <code>InstrumentModel</code> to <code>X</code>, with parameters in physical units</em></p>
+</section>
+</div>
+<p>A band at 2000 cm⁻¹ moves 2 cm⁻¹ higher with a shift of 2 cm⁻¹, or with a stretch of 0.001. A Gaussian filter with σ = 6 cm⁻¹ widens a band of σ = 10 cm⁻¹ from a full width at half maximum (FWHM) of 23.5 cm⁻¹ to √(10² + 6²) × 2.355 = 27.5 cm⁻¹. Counting the points above half the maximum, 2 cm⁻¹ apart, gives 22 and 26 cm⁻¹:</p>
+<div id="b0f6e135" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>wn <span class="op">=</span> rt_wns.astype(<span class="bu">float</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>band <span class="op">=</span> np.exp(<span class="op">-</span><span class="fl">0.5</span><span class="op">*</span>((wn <span class="op">-</span> <span class="dv">2000</span>)<span class="op">/</span><span class="dv">10</span>)<span class="op">**</span><span class="dv">2</span>)[<span class="va">None</span>]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>peak <span class="op">=</span> <span class="kw">lambda</span> x: wn[x.argmax()]</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>fwhm <span class="op">=</span> <span class="kw">lambda</span> x: (x[<span class="dv">0</span>] <span class="op">&gt;</span> x.<span class="bu">max</span>()<span class="op">/</span><span class="dv">2</span>).<span class="bu">sum</span>()<span class="op">*</span><span class="dv">2</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>test_eq(peak(perturb(band, shift_cm<span class="op">=</span><span class="dv">2</span>)), <span class="dv">2002</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>test_eq(peak(perturb(band, stretch<span class="op">=</span><span class="fl">1e-3</span>)), <span class="dv">2002</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fwhm(band), fwhm(perturb(band, sigma_cm<span class="op">=</span><span class="dv">6</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<pre><code>(np.int64(22), np.int64(26))</code></pre>
+</div>
+</div>
+<p><code>sensitivity</code> predicts the spectra once as they are and once for each case. It gives the mean of the change in prediction (<code>bias</code>) and its RMS (<code>rms</code>):</p>
+<div id="91e64836" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.456328+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:17:53.458962+00:00&quot;,&quot;total&quot;:0.0026368959999558683}}" data-execution_count="6">
+<hr>
+<section id="sensitivity" class="level3">
+<h3 class="anchored" data-anchor-id="sensitivity">sensitivity</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sensitivity(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    model, <span class="co"># Pretrained model, such as from `load_pretrained`</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    X, <span class="co"># Absorbance spectra on `rt_wns`, one per row</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    cases, <span class="co"># Dict from a name to a function that turns `X` into perturbed spectra, such as a `partial` of `perturb`</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>pandas.DataFrame: <span class="co"># One row per case</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Mean and RMS of the change in the predictions of <code>model</code> when each function in <code>cases</code> is applied to <code>X</code></em></p>
+</section>
+</div>
+<div id="144618b0" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>).uniform(<span class="fl">0.5</span>, <span class="fl">1.5</span>, (<span class="dv">8</span>, <span class="bu">len</span>(rt_wns)))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> sensitivity(SpectralCNN(), x, {<span class="st">'none'</span>: <span class="kw">lambda</span> X: X, <span class="st">'shift'</span>: partial(perturb, shift_cm<span class="op">=</span><span class="dv">2</span>)})</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>test_eq(res.loc[<span class="st">'none'</span>].tolist(), [<span class="dv">0</span>, <span class="dv">0</span>])</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>res</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">none</th>
+<td>0.000000</td>
+<td>0.000000</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">shift</th>
+<td>0.003212</td>
+<td>0.004589</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="ossl-validation-spectra" class="level2">
+<h2 class="anchored" data-anchor-id="ossl-validation-spectra">OSSL validation spectra</h2>
+<p>Each model is tested on spectra from its OSSL validation set, the 10% of samples that <code>pretrain</code> held out. <code>get_splitter</code> with the seed of <code>pretrain</code> gives the same split, and the models reach the R² that pretraining recorded at its last epoch. The validation RMSE gives a scale for the changes below. For K, the predictions and their changes are in <code>log1p(K)</code>:</p>
+<div id="a236b5bf" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>om <span class="op">=</span> load_ossl().mir(<span class="dv">650</span>, <span class="dv">4000</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> {p: load_pretrained(<span class="ss">f'ossl_</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">_snv_ep80'</span>) <span class="cf">for</span> p <span class="kw">in</span> ossl_props}</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> valid_set(p):</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    X, y, _ <span class="op">=</span> ossl_xy(om, p)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    vi <span class="op">=</span> get_splitter(<span class="fl">0.9</span>, <span class="fl">0.1</span>, seed<span class="op">=</span><span class="dv">42</span>)(X, y)[<span class="dv">1</span>]</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X[vi], y[vi]</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>val <span class="op">=</span> {p: valid_set(p) <span class="cf">for</span> p <span class="kw">in</span> ossl_props}</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>pv <span class="op">=</span> {p: predict(models[p], preprocess().fit_transform(X), rt_wns).ravel() <span class="cf">for</span> p, (X, y) <span class="kw">in</span> val.items()}</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> pd.DataFrame({p: {<span class="st">'R²'</span>: r2_score(y, pv[p]), <span class="st">'recorded R²'</span>: pretrain_history(<span class="ss">f'ossl_</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">_snv_ep80'</span>).r2_score.iloc[<span class="op">-</span><span class="dv">1</span>],</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>                           <span class="st">'RMSE'</span>: np.sqrt(((pv[p] <span class="op">-</span> y)<span class="op">**</span><span class="dv">2</span>).mean())} <span class="cf">for</span> p, (X, y) <span class="kw">in</span> val.items()}).T</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>test_close(scores[<span class="st">'R²'</span>], scores[<span class="st">'recorded R²'</span>], eps<span class="op">=</span><span class="fl">1e-3</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>scores.<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">R²</th>
+<th data-quarto-table-cell-role="th">recorded R²</th>
+<th data-quarto-table-cell-role="th">RMSE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">clay_perc</th>
+<td>0.924</td>
+<td>0.924</td>
+<td>4.739</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">pH_H20</th>
+<td>0.931</td>
+<td>0.931</td>
+<td>0.346</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">potassium_cmolkg</th>
+<td>0.822</td>
+<td>0.822</td>
+<td>0.161</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The tests use 2,000 of these spectra for each property. <code>sweep</code> runs <code>sensitivity</code> for the three models:</p>
+<div id="553e7de6" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>Xs <span class="op">=</span> {p: X[rng.choice(<span class="bu">len</span>(X), <span class="dv">2000</span>, replace<span class="op">=</span><span class="va">False</span>)] <span class="cf">for</span> p, (X, y) <span class="kw">in</span> val.items()}</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sweep(cases): <span class="cf">return</span> pd.concat({p: sensitivity(models[p], Xs[p], cases) <span class="cf">for</span> p <span class="kw">in</span> ossl_props}, axis<span class="op">=</span><span class="dv">1</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="wavenumber-shift" class="level2">
+<h2 class="anchored" data-anchor-id="wavenumber-shift">Wavenumber shift</h2>
+<p>A shift moves every band by the same number of cm⁻¹. In <code>03_instrument_model</code>, the shift fitted for IAEA is 2.4 to 2.5 cm⁻¹ in size. The cases go from 0.5 to 4 cm⁻¹ in each direction:</p>
+<div id="d1de0e91" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>sweep({<span class="ss">f'</span><span class="sc">{</span>s<span class="sc">:+g}</span><span class="ss"> cm⁻¹'</span>: partial(perturb, shift_cm<span class="op">=</span>s) <span class="cf">for</span> s <span class="kw">in</span> [<span class="op">-</span><span class="dv">4</span>, <span class="op">-</span><span class="dv">2</span>, <span class="op">-</span><span class="dv">1</span>, <span class="op">-</span><span class="fl">0.5</span>, <span class="fl">0.5</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">4</span>]}).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">-4 cm⁻¹</th>
+<td>16.59</td>
+<td>20.74</td>
+<td>0.15</td>
+<td>0.37</td>
+<td>0.19</td>
+<td>0.28</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">-2 cm⁻¹</th>
+<td>10.90</td>
+<td>13.15</td>
+<td>0.08</td>
+<td>0.21</td>
+<td>0.18</td>
+<td>0.23</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">-1 cm⁻¹</th>
+<td>4.32</td>
+<td>5.37</td>
+<td>0.04</td>
+<td>0.11</td>
+<td>0.11</td>
+<td>0.13</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">-0.5 cm⁻¹</th>
+<td>1.78</td>
+<td>2.31</td>
+<td>0.02</td>
+<td>0.05</td>
+<td>0.05</td>
+<td>0.07</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">+0.5 cm⁻¹</th>
+<td>-1.19</td>
+<td>1.89</td>
+<td>-0.02</td>
+<td>0.06</td>
+<td>-0.03</td>
+<td>0.05</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">+1 cm⁻¹</th>
+<td>-1.88</td>
+<td>3.35</td>
+<td>-0.04</td>
+<td>0.13</td>
+<td>-0.06</td>
+<td>0.09</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">+2 cm⁻¹</th>
+<td>-1.96</td>
+<td>5.24</td>
+<td>-0.08</td>
+<td>0.24</td>
+<td>-0.11</td>
+<td>0.17</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">+4 cm⁻¹</th>
+<td>1.77</td>
+<td>7.66</td>
+<td>-0.02</td>
+<td>0.36</td>
+<td>-0.18</td>
+<td>0.27</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Clay reacts most. Moving the bands 1 cm⁻¹ lower changes the clay predictions by 5.4 percentage points RMS, more than the validation RMSE of 4.7. Moving them 2 cm⁻¹ lower changes clay by 13.2 points RMS, with a bias of +10.9. The response is not symmetric: moving the bands higher by the same amount changes clay by less, with a bias of about -2 points. At 2 cm⁻¹ in either direction, pH changes by 0.21 to 0.24 RMS, against a validation RMSE of 0.35, and K by 0.17 to 0.23, against 0.16.</p>
+</section>
+<section id="wavenumber-stretch" class="level2">
+<h2 class="anchored" data-anchor-id="wavenumber-stretch">Wavenumber stretch</h2>
+<p>A stretch moves each band in proportion to its wavenumber, as an error in the laser wavenumber of an FTIR instrument does. A stretch of 0.001 moves a band at 4000 cm⁻¹ by 4 cm⁻¹, and a band at 1000 cm⁻¹ by 1 cm⁻¹:</p>
+<div id="71370ebb" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sweep({<span class="ss">f'</span><span class="sc">{</span>s<span class="sc">:+g}</span><span class="ss">'</span>: partial(perturb, stretch<span class="op">=</span>s) <span class="cf">for</span> s <span class="kw">in</span> [<span class="op">-</span><span class="fl">1e-3</span>, <span class="op">-</span><span class="fl">5e-4</span>, <span class="op">-</span><span class="fl">2.5e-4</span>, <span class="fl">2.5e-4</span>, <span class="fl">5e-4</span>, <span class="fl">1e-3</span>]}).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">-0.001</th>
+<td>3.56</td>
+<td>5.66</td>
+<td>0.09</td>
+<td>0.20</td>
+<td>0.15</td>
+<td>0.19</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">-0.0005</th>
+<td>1.20</td>
+<td>2.73</td>
+<td>0.06</td>
+<td>0.12</td>
+<td>0.10</td>
+<td>0.13</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">-0.00025</th>
+<td>0.55</td>
+<td>1.43</td>
+<td>0.03</td>
+<td>0.06</td>
+<td>0.06</td>
+<td>0.07</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">+0.00025</th>
+<td>-0.43</td>
+<td>1.50</td>
+<td>-0.02</td>
+<td>0.07</td>
+<td>-0.03</td>
+<td>0.05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">+0.0005</th>
+<td>-0.73</td>
+<td>2.79</td>
+<td>-0.03</td>
+<td>0.13</td>
+<td>-0.07</td>
+<td>0.10</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">+0.001</th>
+<td>-1.29</td>
+<td>4.81</td>
+<td>-0.04</td>
+<td>0.24</td>
+<td>-0.10</td>
+<td>0.15</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>A stretch of 0.001 moves the bands by 0.65 cm⁻¹ at 650 cm⁻¹ and by 4 cm⁻¹ at 4000 cm⁻¹. It changes clay by 4.8 to 5.7 points RMS, about as much as a uniform shift of 1 cm⁻¹.</p>
+</section>
+<section id="broadening" class="level2">
+<h2 class="anchored" data-anchor-id="broadening">Broadening</h2>
+<p>A coarser resolution widens every band. KSSL records at 4 cm⁻¹, and OSU at 8 cm⁻¹. To give a resolution R, the filter has σ = √(R² − 4²) / 2.355, which treats both resolutions as the FWHM of a Gaussian line. 16 cm⁻¹ is a coarse extreme:</p>
+<div id="3ac607de" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>sigma <span class="op">=</span> <span class="kw">lambda</span> res: np.sqrt(res<span class="op">**</span><span class="dv">2</span> <span class="op">-</span> <span class="dv">4</span><span class="op">**</span><span class="dv">2</span>)<span class="op">/</span><span class="fl">2.355</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>sweep({<span class="ss">f'</span><span class="sc">{</span>r<span class="sc">}</span><span class="ss"> cm⁻¹'</span>: partial(perturb, sigma_cm<span class="op">=</span>sigma(r)) <span class="cf">for</span> r <span class="kw">in</span> [<span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">16</span>]}).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">6 cm⁻¹</th>
+<td>0.05</td>
+<td>1.31</td>
+<td>-0.01</td>
+<td>0.05</td>
+<td>0.03</td>
+<td>0.05</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">8 cm⁻¹</th>
+<td>-0.11</td>
+<td>2.44</td>
+<td>-0.02</td>
+<td>0.09</td>
+<td>0.05</td>
+<td>0.08</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">16 cm⁻¹</th>
+<td>-0.35</td>
+<td>6.11</td>
+<td>-0.08</td>
+<td>0.32</td>
+<td>0.18</td>
+<td>0.24</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Broadening changes the predictions with almost no bias. Broadening to 8 cm⁻¹, the resolution of OSU, changes clay by 2.4 points RMS, half its validation RMSE. Broadening to 16 cm⁻¹ changes clay by 6.1 points and K by 0.24, more than their validation RMSE.</p>
+</section>
+<section id="contrast" class="level2">
+<h2 class="anchored" data-anchor-id="contrast">Contrast</h2>
+<p>Contrast raises the absorbance to a power γ. The values fitted in <code>03_instrument_model</code> are 0.59 for IAEA and 1.34 for OSU, so the cases go from 0.6 to 1.4:</p>
+<div id="bd0a7da4" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>sweep({<span class="ss">f'γ </span><span class="sc">{</span>g<span class="sc">}</span><span class="ss">'</span>: partial(perturb, gamma<span class="op">=</span>g) <span class="cf">for</span> g <span class="kw">in</span> [<span class="fl">0.6</span>, <span class="fl">0.8</span>, <span class="fl">0.9</span>, <span class="fl">1.1</span>, <span class="fl">1.2</span>, <span class="fl">1.4</span>]}).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">γ 0.6</th>
+<td>1.29</td>
+<td>2.88</td>
+<td>0.12</td>
+<td>0.24</td>
+<td>0.01</td>
+<td>0.08</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">γ 0.8</th>
+<td>0.51</td>
+<td>1.37</td>
+<td>0.06</td>
+<td>0.12</td>
+<td>0.01</td>
+<td>0.05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">γ 0.9</th>
+<td>0.22</td>
+<td>0.71</td>
+<td>0.03</td>
+<td>0.06</td>
+<td>0.01</td>
+<td>0.03</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">γ 1.1</th>
+<td>-0.17</td>
+<td>0.66</td>
+<td>-0.03</td>
+<td>0.06</td>
+<td>-0.01</td>
+<td>0.03</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">γ 1.2</th>
+<td>-0.31</td>
+<td>1.22</td>
+<td>-0.06</td>
+<td>0.11</td>
+<td>-0.01</td>
+<td>0.05</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">γ 1.4</th>
+<td>-0.52</td>
+<td>2.35</td>
+<td>-0.11</td>
+<td>0.21</td>
+<td>-0.03</td>
+<td>0.09</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>At the fitted values of IAEA and OSU, γ = 0.6 and 1.4, contrast changes clay by 2.9 and 2.4 points RMS.</p>
+</section>
+<section id="gain-and-baseline" class="level2">
+<h2 class="anchored" data-anchor-id="gain-and-baseline">Gain and baseline</h2>
+<p>Gain multiplies the spectrum by a smooth curve, and baseline adds one. Both are B-splines with 10 basis functions, as in <code>InstrumentModel</code>. Their coefficients are drawn from a normal distribution with standard deviation <code>sd</code>, around 1 for gain and around 0 for baseline. Baseline coefficients are in absorbance, and the median absorbance of the OSSL spectra is about 0.9. Each <code>sd</code> has five draws. The bias of one draw has an arbitrary sign, so the table gives the mean over draws of the absolute bias and of the RMS change:</p>
+<div id="6c80edc2" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>draws <span class="op">=</span> <span class="kw">lambda</span> sd, seed: [np.random.default_rng(seed <span class="op">+</span> d).normal(<span class="dv">0</span>, sd, <span class="dv">10</span>) <span class="cf">for</span> d <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">5</span>)]</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>gb <span class="op">=</span> {(<span class="st">'gain'</span>, sd, d): partial(perturb, gain<span class="op">=</span>c) <span class="cf">for</span> sd <span class="kw">in</span> [<span class="fl">0.01</span>, <span class="fl">0.03</span>, <span class="fl">0.1</span>] <span class="cf">for</span> d, c <span class="kw">in</span> <span class="bu">enumerate</span>(draws(sd, <span class="dv">0</span>))}</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>gb <span class="op">|=</span> {(<span class="st">'baseline'</span>, sd, d): partial(perturb, baseline<span class="op">=</span>c) <span class="cf">for</span> sd <span class="kw">in</span> [<span class="fl">0.003</span>, <span class="fl">0.01</span>, <span class="fl">0.03</span>, <span class="fl">0.1</span>] <span class="cf">for</span> d, c <span class="kw">in</span> <span class="bu">enumerate</span>(draws(sd, <span class="dv">100</span>))}</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>sweep(gb).<span class="bu">abs</span>().groupby(level<span class="op">=</span>[<span class="dv">0</span>, <span class="dv">1</span>]).mean().<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th rowspan="4" data-quarto-table-cell-role="th" data-valign="top">baseline</th>
+<th data-quarto-table-cell-role="th">0.003</th>
+<td>0.06</td>
+<td>0.12</td>
+<td>0.00</td>
+<td>0.01</td>
+<td>0.00</td>
+<td>0.00</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">0.010</th>
+<td>0.20</td>
+<td>0.39</td>
+<td>0.01</td>
+<td>0.04</td>
+<td>0.00</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0.030</th>
+<td>0.60</td>
+<td>1.15</td>
+<td>0.04</td>
+<td>0.11</td>
+<td>0.01</td>
+<td>0.03</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">0.100</th>
+<td>1.92</td>
+<td>3.69</td>
+<td>0.19</td>
+<td>0.36</td>
+<td>0.04</td>
+<td>0.10</td>
+</tr>
+<tr class="odd">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">gain</th>
+<th data-quarto-table-cell-role="th">0.010</th>
+<td>0.32</td>
+<td>0.48</td>
+<td>0.02</td>
+<td>0.03</td>
+<td>0.01</td>
+<td>0.02</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">0.030</th>
+<td>0.99</td>
+<td>1.44</td>
+<td>0.06</td>
+<td>0.10</td>
+<td>0.02</td>
+<td>0.05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">0.100</th>
+<td>3.73</td>
+<td>4.94</td>
+<td>0.16</td>
+<td>0.31</td>
+<td>0.09</td>
+<td>0.15</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>For their size, smooth gain and baseline curves change the predictions least. A baseline with <code>sd</code> 0.003 absorbance, the RMS size of D, changes clay by 0.12 points RMS, against 2.8 for D itself in the next section. Only a gain with <code>sd</code> 0.1, a variation of about 10% along the spectrum, changes clay by about its validation RMSE (4.9 points).</p>
+</section>
+<section id="measured-differences" class="level2">
+<h2 class="anchored" data-anchor-id="measured-differences">Measured differences</h2>
+<p>D is the mean difference between the KSSL ring-trial spectra and the OSSL spectra of the ring-trial soils that are in OSSL. The fitted models are those of <code>03_instrument_model</code>, fitted here for all 20 instruments on the soils that each instrument and KSSL both measured. Each turns a KSSL spectrum into a spectrum of that instrument. Applied to OSSL spectra, the models of MSU, IAEA and OSU show how the CNNs would react if these instruments had measured the OSSL soils. The bias here has a sign:</p>
+<div id="c5d4b073" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>rt <span class="op">=</span> load_ringtrial(rt_path())</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>mt <span class="op">=</span> ossl_matches(rt[<span class="st">'KSSL'</span>], om)</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>mt <span class="op">=</span> mt[mt.ossl_id.isin(ossl_overlap)]</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> (rt[<span class="st">'KSSL'</span>].spectra[pd.Index(rt[<span class="st">'KSSL'</span>].sample_ids).get_indexer(mt.index)]</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>     <span class="op">-</span> om.spectra[pd.Index(om.sample_ids).get_indexer(mt.ossl_id)]).mean(<span class="dv">0</span>)</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>others <span class="op">=</span> [k <span class="cf">for</span> k <span class="kw">in</span> rt <span class="cf">if</span> k <span class="op">!=</span> <span class="st">'KSSL'</span>]</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>effects <span class="op">=</span> {<span class="st">'gain+baseline'</span>: (<span class="st">'gain'</span>, <span class="st">'baseline'</span>), <span class="st">'all five'</span>: (<span class="st">'shift'</span>, <span class="st">'broaden'</span>, <span class="st">'contrast'</span>, <span class="st">'gain'</span>, <span class="st">'baseline'</span>)}</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>paired <span class="op">=</span> {i: paired_spectra(rt, i) <span class="cf">for</span> i <span class="kw">in</span> others}</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>rt_fits <span class="op">=</span> {(i, n): fit_instrument(wn, paired[i][<span class="dv">2</span>], paired[i][<span class="dv">1</span>], e) <span class="cf">for</span> i <span class="kw">in</span> others <span class="cf">for</span> n, e <span class="kw">in</span> effects.items()}</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a><span class="bu">apply</span> <span class="op">=</span> <span class="kw">lambda</span> m: <span class="kw">lambda</span> X: m(torch.tensor(X, dtype<span class="op">=</span>torch.float64)).detach().numpy()</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>sweep({(<span class="st">'D'</span>, <span class="st">''</span>): <span class="kw">lambda</span> X: X <span class="op">+</span> D} <span class="op">|</span> {k: <span class="bu">apply</span>(m) <span class="cf">for</span> k, m <span class="kw">in</span> rt_fits.items() <span class="cf">if</span> k[<span class="dv">0</span>] <span class="kw">in</span> [<span class="st">'MSU'</span>, <span class="st">'IAEA_aug2022'</span>, <span class="st">'OSU'</span>]}).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">rms</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">D</th>
+<th data-quarto-table-cell-role="th"></th>
+<td>2.31</td>
+<td>2.780000</td>
+<td>-0.06</td>
+<td>0.08</td>
+<td>0.00</td>
+<td>0.04</td>
+</tr>
+<tr class="even">
+<th rowspan="2" data-quarto-table-cell-role="th" data-valign="top">IAEA_aug2022</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<td>-7.63</td>
+<td>11.060000</td>
+<td>-0.39</td>
+<td>0.59</td>
+<td>-0.00</td>
+<td>0.28</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">all five</th>
+<td>-7.21</td>
+<td>11.820000</td>
+<td>-0.13</td>
+<td>0.53</td>
+<td>-0.06</td>
+<td>0.30</td>
+</tr>
+<tr class="even">
+<th rowspan="2" data-quarto-table-cell-role="th" data-valign="top">MSU</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<td>1.51</td>
+<td>2.230000</td>
+<td>0.08</td>
+<td>0.13</td>
+<td>0.06</td>
+<td>0.08</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">all five</th>
+<td>0.45</td>
+<td>1.880000</td>
+<td>0.06</td>
+<td>0.12</td>
+<td>0.05</td>
+<td>0.07</td>
+</tr>
+<tr class="even">
+<th rowspan="2" data-quarto-table-cell-role="th" data-valign="top">OSU</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<td>7.41</td>
+<td>8.760000</td>
+<td>0.35</td>
+<td>0.53</td>
+<td>0.28</td>
+<td>0.33</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">all five</th>
+<td>17.17</td>
+<td>18.559999</td>
+<td>0.34</td>
+<td>0.55</td>
+<td>0.32</td>
+<td>0.38</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>D changes clay by +2.3 points on average. A smooth baseline of the same RMS size changes clay by about 0.1 points, so the model reacts to the narrow bands where D lies, not to its size. The fitted effects of IAEA and OSU change clay by 7 to 17 points, and those of MSU by 2 points or less. For OSU, adding shift, broadening and contrast to gain and baseline doubles the clay bias, from +7.4 to +17.2 points, although in <code>03_instrument_model</code> these three effects barely improved the fit to the spectra.</p>
+<p>The fitted models reproduce only the part of an instrument’s difference from KSSL that all its soils share. On the ring-trial soils, the change in prediction from the KSSL spectra to the instrument’s measured spectra (<code>measured</code>) can be compared with the change from the KSSL spectra to the output of each fitted model. The table gives the bias of each change, for every instrument:</p>
+<div id="8968c7bc" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> ring_trial_change(inst):</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>    ids, Xi, Xr <span class="op">=</span> paired[inst]</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>    cases <span class="op">=</span> {<span class="st">'measured'</span>: <span class="kw">lambda</span> X: Xi} <span class="op">|</span> {n: <span class="bu">apply</span>(rt_fits[(inst, n)]) <span class="cf">for</span> n <span class="kw">in</span> effects}</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.concat({p: sensitivity(models[p], Xr, cases).bias <span class="cf">for</span> p <span class="kw">in</span> ossl_props}, axis<span class="op">=</span><span class="dv">1</span>).unstack()</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>changes <span class="op">=</span> pd.DataFrame({i: ring_trial_change(i) <span class="cf">for</span> i <span class="kw">in</span> others}).T</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>changes.<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="3" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="3" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="3" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">measured</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<th data-quarto-table-cell-role="th">all five</th>
+<th data-quarto-table-cell-role="th">measured</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<th data-quarto-table-cell-role="th">all five</th>
+<th data-quarto-table-cell-role="th">measured</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<th data-quarto-table-cell-role="th">all five</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Agrocares</th>
+<td>-3.790000</td>
+<td>4.59</td>
+<td>1.950000</td>
+<td>-0.04</td>
+<td>0.19</td>
+<td>0.15</td>
+<td>0.09</td>
+<td>0.18</td>
+<td>0.08</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Argonne</th>
+<td>-3.180000</td>
+<td>5.85</td>
+<td>3.950000</td>
+<td>-0.00</td>
+<td>0.25</td>
+<td>0.18</td>
+<td>0.04</td>
+<td>0.13</td>
+<td>0.06</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">CSU_IL</th>
+<td>-0.330000</td>
+<td>1.11</td>
+<td>2.980000</td>
+<td>-0.20</td>
+<td>0.18</td>
+<td>0.15</td>
+<td>-0.00</td>
+<td>0.10</td>
+<td>0.13</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">ETH_alpha_1</th>
+<td>-5.480000</td>
+<td>3.77</td>
+<td>7.040000</td>
+<td>-0.03</td>
+<td>0.24</td>
+<td>0.24</td>
+<td>0.16</td>
+<td>0.32</td>
+<td>0.34</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">ETH_alpha_2</th>
+<td>-3.330000</td>
+<td>5.73</td>
+<td>9.650000</td>
+<td>-0.05</td>
+<td>0.21</td>
+<td>0.20</td>
+<td>0.15</td>
+<td>0.32</td>
+<td>0.34</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">ETH_vertex</th>
+<td>0.310000</td>
+<td>4.50</td>
+<td>12.190000</td>
+<td>0.13</td>
+<td>0.14</td>
+<td>0.15</td>
+<td>0.01</td>
+<td>0.17</td>
+<td>0.21</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">IAEA_aug2022</th>
+<td>-22.120001</td>
+<td>-11.75</td>
+<td>-12.620000</td>
+<td>-0.42</td>
+<td>-0.12</td>
+<td>0.26</td>
+<td>0.32</td>
+<td>0.02</td>
+<td>-0.04</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">LandCare</th>
+<td>1.630000</td>
+<td>0.92</td>
+<td>0.540000</td>
+<td>0.05</td>
+<td>-0.03</td>
+<td>-0.05</td>
+<td>-0.11</td>
+<td>0.04</td>
+<td>0.07</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Lesotho</th>
+<td>-6.690000</td>
+<td>-2.72</td>
+<td>1.660000</td>
+<td>0.35</td>
+<td>0.75</td>
+<td>-0.22</td>
+<td>0.04</td>
+<td>0.08</td>
+<td>0.26</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">MSU</th>
+<td>0.280000</td>
+<td>1.02</td>
+<td>-0.290000</td>
+<td>0.02</td>
+<td>0.08</td>
+<td>0.06</td>
+<td>-0.01</td>
+<td>0.06</td>
+<td>0.05</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">OSU</th>
+<td>-2.400000</td>
+<td>8.07</td>
+<td>16.870001</td>
+<td>0.07</td>
+<td>0.41</td>
+<td>0.44</td>
+<td>0.17</td>
+<td>0.29</td>
+<td>0.32</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Rothamsted</th>
+<td>-0.860000</td>
+<td>2.20</td>
+<td>7.960000</td>
+<td>-0.02</td>
+<td>0.11</td>
+<td>0.12</td>
+<td>-0.03</td>
+<td>0.15</td>
+<td>0.21</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Scion</th>
+<td>5.560000</td>
+<td>6.08</td>
+<td>11.550000</td>
+<td>0.01</td>
+<td>0.25</td>
+<td>0.17</td>
+<td>0.09</td>
+<td>0.15</td>
+<td>0.16</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">UGhent</th>
+<td>0.920000</td>
+<td>1.65</td>
+<td>0.430000</td>
+<td>0.10</td>
+<td>0.05</td>
+<td>0.02</td>
+<td>0.20</td>
+<td>0.01</td>
+<td>0.01</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">UIUC</th>
+<td>-3.100000</td>
+<td>3.09</td>
+<td>1.550000</td>
+<td>-0.42</td>
+<td>-0.19</td>
+<td>-0.28</td>
+<td>0.25</td>
+<td>-0.09</td>
+<td>-0.18</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">USP</th>
+<td>-1.590000</td>
+<td>3.18</td>
+<td>0.740000</td>
+<td>0.00</td>
+<td>0.15</td>
+<td>0.12</td>
+<td>0.22</td>
+<td>0.25</td>
+<td>0.22</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">UWisc_fine</th>
+<td>0.610000</td>
+<td>1.22</td>
+<td>3.240000</td>
+<td>-0.03</td>
+<td>0.09</td>
+<td>0.04</td>
+<td>-0.04</td>
+<td>-0.09</td>
+<td>-0.06</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Woodwell_alpha</th>
+<td>-2.650000</td>
+<td>5.37</td>
+<td>4.200000</td>
+<td>-0.09</td>
+<td>0.21</td>
+<td>0.14</td>
+<td>0.11</td>
+<td>0.19</td>
+<td>0.16</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">Woodwell_vertex</th>
+<td>-2.990000</td>
+<td>7.52</td>
+<td>12.260000</td>
+<td>-0.13</td>
+<td>0.43</td>
+<td>0.41</td>
+<td>0.13</td>
+<td>0.36</td>
+<td>0.35</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">Hokudai</th>
+<td>-5.820000</td>
+<td>0.33</td>
+<td>0.860000</td>
+<td>-0.03</td>
+<td>0.28</td>
+<td>0.34</td>
+<td>0.26</td>
+<td>0.25</td>
+<td>0.30</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>The shared effects do not reproduce the measured change in clay. They raise the clay predictions on 18 of the 20 instruments, with a median of +3.1 points for gain and baseline, while the measured spectra lower them on 14, with a median of -2.5 points. Across instruments, the two changes correlate at r = 0.70: the instruments with the largest measured change also have the largest modelled change, but the modelled change is higher. IAEA has the largest measured change, -22 points, and the shared effects give about half of it. For K, the measured spectra raise the predictions on 15 instruments, and gain and baseline on 18, with medians of +0.10 and +0.15 in <code>log1p(K)</code>. The shared effects give the direction of the K change on most instruments, but not which instruments have the largest (r = 0.21).</p>
+</section>
+<section id="a-soil-specific-part-shared-by-the-labs" class="level2">
+<h2 class="anchored" data-anchor-id="a-soil-specific-part-shared-by-the-labs">A soil-specific part shared by the labs</h2>
+<p>In <code>03_instrument_model</code>, the first component of the soil-specific residuals lies on the quartz bands, and its scores correlate with clay with the same sign in 14 of the 20 labs. Part of the soil-specific difference may therefore be common to the labs: a difference between each soil’s KSSL spectrum and its spectrum in any other lab. For each instrument, the mean SNV residual of each soil over the other 19 instruments estimates this part without using the instrument’s own residuals. It is added to the SNV of the gain and baseline output. The table gives, over the 20 instruments, the correlation of each modelled change with the measured change, and their mean absolute difference:</p>
+<div id="fbde52dd" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>snv <span class="op">=</span> <span class="kw">lambda</span> X: (X <span class="op">-</span> X.mean(<span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>))<span class="op">/</span>X.std(<span class="dv">1</span>, keepdims<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>gb_out <span class="op">=</span> <span class="kw">lambda</span> i: <span class="bu">apply</span>(rt_fits[(i, <span class="st">'gain+baseline'</span>)])(paired[i][<span class="dv">2</span>])</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>resid <span class="op">=</span> {i: pd.DataFrame(snv(paired[i][<span class="dv">1</span>]) <span class="op">-</span> snv(gb_out(i)), index<span class="op">=</span>paired[i][<span class="dv">0</span>]) <span class="cf">for</span> i <span class="kw">in</span> others}</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> common_change(inst):</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    ids, Xi, Xr <span class="op">=</span> paired[inst]<span class="op">;</span> Xm <span class="op">=</span> gb_out(inst)</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    rbar <span class="op">=</span> pd.concat([resid[k].reindex(ids) <span class="cf">for</span> k <span class="kw">in</span> others <span class="cf">if</span> k <span class="op">!=</span> inst]).groupby(level<span class="op">=</span><span class="dv">0</span>).mean().reindex(ids).values</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    cases <span class="op">=</span> {<span class="st">'measured'</span>: <span class="kw">lambda</span> X: Xi, <span class="st">'gain+baseline'</span>: <span class="kw">lambda</span> X: Xm, <span class="st">'+ common residual'</span>: <span class="kw">lambda</span> X: snv(Xm) <span class="op">+</span> rbar}</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.concat({p: sensitivity(models[p], Xr, cases).bias <span class="cf">for</span> p <span class="kw">in</span> ossl_props}, axis<span class="op">=</span><span class="dv">1</span>).unstack()</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>common <span class="op">=</span> pd.DataFrame({i: common_change(i) <span class="cf">for</span> i <span class="kw">in</span> others}).T</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>pd.DataFrame({(p, c): {<span class="st">'r with measured'</span>: common[(p, c)].corr(common[(p, <span class="st">'measured'</span>)]),</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>                       <span class="st">'mean |gap|'</span>: (common[(p, c)] <span class="op">-</span> common[(p, <span class="st">'measured'</span>)]).<span class="bu">abs</span>().mean()}</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>              <span class="cf">for</span> p <span class="kw">in</span> ossl_props <span class="cf">for</span> c <span class="kw">in</span> [<span class="st">'gain+baseline'</span>, <span class="st">'+ common residual'</span>]}).<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">clay_perc</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">pH_H20</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">potassium_cmolkg</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<th data-quarto-table-cell-role="th">+ common residual</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<th data-quarto-table-cell-role="th">+ common residual</th>
+<th data-quarto-table-cell-role="th">gain+baseline</th>
+<th data-quarto-table-cell-role="th">+ common residual</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">r with measured</th>
+<td>0.70</td>
+<td>0.65</td>
+<td>0.66</td>
+<td>0.62</td>
+<td>0.21</td>
+<td>0.25</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">mean |gap|</th>
+<td>5.41</td>
+<td>3.62</td>
+<td>0.23</td>
+<td>0.13</td>
+<td>0.13</td>
+<td>0.10</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<p>Adding the common residual brings the modelled change closer to the measured change. The mean absolute difference falls from 5.4 to 3.6 points for clay, from 0.23 to 0.13 for pH, and from 0.13 to 0.10 for K. The rest of the soil-specific difference belongs to each lab.</p>
+</section>
+<section id="consequences-for-augmentation" class="level2">
+<h2 class="anchored" data-anchor-id="consequences-for-augmentation">Consequences for augmentation</h2>
+<ul>
+<li>The models react most to a wavenumber shift or stretch, at sizes that real instruments have. An augmentation engine needs both, with shifts of at least ±2 cm⁻¹, the size fitted for IAEA.</li>
+<li>Broadening to 8 cm⁻¹ and contrast within the fitted range change the predictions by about half the validation RMSE.</li>
+<li>Smooth gain and baseline curves change the predictions least for their size.</li>
+<li>The models react strongly to narrow features such as those of D, which smooth gain and baseline cannot produce.</li>
+<li>On the ring-trial soils, the shared effects fitted for each instrument raise the clay predictions on 18 of the 20 instruments, while the measured spectra lower them on 14. For K, both raise the predictions on most instruments.</li>
+<li>A soil-specific difference common to the labs explains about a third of the clay gap. Augmentation can add such terms at random for each scan, such as the quartz-band and water components of <code>03_instrument_model</code>.</li>
+<li>This check does not show whether augmentation makes the models stable on the measured spectra. Pretraining with augmentation, then scoring on the ring trial, is the test of that.</li>
+</ul>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/franckalbinet\.github\.io\/ossl-rt-transfer");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/franckalbinet/ossl-rt-transfer/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>

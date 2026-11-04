@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.11.9">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="How much of fine-tuning a linear correction of the zero-shot predictions, or a refit of the BatchNorm statistics or the head, can replace">
+
+<title>Recalibration – OSSL to ring trial transfer</title>
+<style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: 1.5em;}
+div.column{flex: auto;}
+@media screen {
+div.columns{gap: min(4vw, 1.5em);}
+div.column{overflow-x: auto;}
+}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+html { -webkit-text-size-adjust: 100%; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js" integrity="sha384-ZvpUoO/+PpLXR1lu4jmpXWu80pZlYUAfxl5NsBMWOEPSjUn/6Z/hRTt8+pR6L4N2" crossorigin="anonymous"></script><script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<script src="site_libs/quarto-html/quarto.js" type="module"></script>
+<script src="site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
+<script src="site_libs/quarto-html/scrollable-regions/scrollable-regions.js" type="module"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting-63b5708e65d6cd79cd7618c58d0c21e7.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap-0ae2d6264e000b8c4f084cd30789b847.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<script src="https://cdn.jsdelivr.net/npm/requirejs@2.3.6/require.min.js" integrity="sha384-c9c+LnTbwQ3aujuU7ULEPVvgLs+Fn6fJUvIGTsuu1ZcCf11fiEubah0ttpca4ntM sha384-6V1/AdqZRWk1KAlWbKBlGhN7VG4iE/yAZcO6NZPMF8od0vukrvr0tg4qY6NSrItx" crossorigin="anonymous"></script>
+
+<script type="application/javascript">define('jquery', [],function() {return window.jQuery;})</script>
+
+
+<link rel="stylesheet" href="styles.css">
+<meta property="og:title" content="Recalibration – OSSL to ring trial transfer">
+<meta property="og:description" content="How much of fine-tuning a linear correction of the zero-shot predictions, or a refit of the BatchNorm statistics or the head, can replace">
+<meta property="og:site_name" content="OSSL to ring trial transfer">
+<meta name="twitter:title" content="Recalibration – OSSL to ring trial transfer">
+<meta name="twitter:description" content="How much of fine-tuning a linear correction of the zero-shot predictions, or a refit of the BatchNorm statistics or the head, can replace">
+<meta name="twitter:card" content="summary">
+</head>
+
+<body class="nav-sidebar floating nav-fixed quarto-light"><a id="quarto-skip-link" class="visually-hidden-focusable" href="#quarto-document-content">Skip to main content</a>
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark" aria-label="Site">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a class="navbar-brand" href="./index.html">
+    <span class="navbar-title">OSSL to ring trial transfer</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav" aria-label="Toolbar">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <nav class="quarto-page-breadcrumbs" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./zero_shot.html">Transfer</a></li><li class="breadcrumb-item"><a href="./recalibrate.html">Recalibration</a></li></ol></nav>
+        <a class="flex-grow-1" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+        </a>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation floating overflow-auto" aria-label="Section">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" aria-controls="quarto-sidebar-section-1" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-1-label">Data and spectra</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-1" aria-labelledby="quarto-sidebar-section-1-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./data.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Ring-trial data</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" aria-controls="quarto-sidebar-section-2" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-2-label">Pretraining</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-2" aria-labelledby="quarto-sidebar-section-2-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./pretrain.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Pretraining on OSSL</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" aria-controls="quarto-sidebar-section-3" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-3-label">Transfer</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-3" aria-labelledby="quarto-sidebar-section-3-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./zero_shot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Zero-shot transfer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./finetune.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Fine-tuning</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./recalibrate.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Recalibration</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./all_labs.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">All labs</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./where_it_fails.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Where transfer fails</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <button type="button" class="sidebar-item-text sidebar-item-toggle sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" aria-controls="quarto-sidebar-section-4" aria-expanded="true">
+ <span class="menu-text" id="quarto-sidebar-section-4-label">Cross-calibration</span><i class="bi bi-chevron-right" aria-hidden="true"></i></button>
+      </div>
+      <ul id="quarto-sidebar-section-4" aria-labelledby="quarto-sidebar-section-4-label" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./instrument_model.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instrument model</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./sensitivity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sensitivity to instrument effects</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./augment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Instrument augmentation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./aug_pretrain.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Augmented pretraining</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" aria-labelledby="toc-title" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#corrections" id="toc-corrections" class="nav-link active" data-scroll-target="#corrections">Corrections</a></li>
+  <li><a href="#data" id="toc-data" class="nav-link" data-scroll-target="#data">Data</a></li>
+  <li><a href="#scores-against-wet-chemistry" id="toc-scores-against-wet-chemistry" class="nav-link" data-scroll-target="#scores-against-wet-chemistry">Scores against wet chemistry</a></li>
+  <li><a href="#share-of-the-fine-tuning-gain" id="toc-share-of-the-fine-tuning-gain" class="nav-link" data-scroll-target="#share-of-the-fine-tuning-gain">Share of the fine-tuning gain</a></li>
+  <li><a href="#paired-tests-against-fine-tuning" id="toc-paired-tests-against-fine-tuning" class="nav-link" data-scroll-target="#paired-tests-against-fine-tuning">Paired tests against fine-tuning</a></li>
+  <li><a href="#zero-shot-calibration" id="toc-zero-shot-calibration" class="nav-link" data-scroll-target="#zero-shot-calibration">Zero-shot calibration</a></li>
+  <li><a href="#results" id="toc-results" class="nav-link" data-scroll-target="#results">Results</a></li>
+  </ul>
+<div class="toc-actions"><ul><li><a href="https://github.com/franckalbinet/ossl-rt-transfer/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content" tabindex="-1">
+
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="Breadcrumbs"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./zero_shot.html">Transfer</a></li><li class="breadcrumb-item"><a href="./recalibrate.html">Recalibration</a></li></ol></nav>
+<div class="quarto-title">
+<h1 class="title">Recalibration</h1>
+</div>
+
+<div>
+  <div class="description">
+    How much of fine-tuning a linear correction of the zero-shot predictions, or a refit of the BatchNorm statistics or the head, can replace
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<!-- WARNING: THIS FILE WAS AUTOGENERATED! DO NOT EDIT! -->
+<div id="6e4a3565" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.467420+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:17:53.474238+00:00&quot;,&quot;total&quot;:0.006821482000020751}}" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> fastcore.test <span class="im">import</span> <span class="op">*</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> soilspecdl.<span class="bu">all</span> <span class="im">import</span> SpectralCNN, regression_scores</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> soilspecdata.datasets.ringtrial <span class="im">import</span> load_ringtrial</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ossl_rt_transfer.data <span class="im">import</span> rt_path, near_dup_groups</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ossl_rt_transfer.pretrain <span class="im">import</span> load_pretrained, log_props</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ossl_rt_transfer.finetune <span class="im">import</span> rt_xy, soil_folds, paired_test, cached, repeat_scores, group_errors</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p>The cells that read the ring-trial data are marked <code>#| rtdata</code>. The outputs on this page come from a local run.</p>
+<p>In <code>07_finetune</code>, fine-tuning on the soils of one instrument raised R² well above zero-shot, for K most of all. Fine-tuning can change every weight, so it can correct anything from an offset in the predictions to the features themselves. This notebook asks how much of its gain cheaper corrections give, each fitted on the same training soils and folds:</p>
+<ul>
+<li><code>bias</code>: the zero-shot predictions plus the mean training residual.</li>
+<li><code>slope and bias</code>: a linear regression of the targets on the zero-shot predictions.</li>
+<li><code>AdaBN</code>: the BatchNorm statistics recomputed on the instrument’s training spectra, with all weights fixed. It needs no targets.</li>
+<li><code>AdaBN, slope and bias</code>: AdaBN followed by a linear regression of the targets on its predictions.</li>
+<li><code>head refit</code>: the last linear layer refitted by ridge regression on the pooled features, with the backbone fixed.</li>
+</ul>
+<p>If <code>slope and bias</code> comes close to fine-tuning, the pretrained model already ranks the soils of that instrument as well as fine-tuning does, and fine-tuning mostly recalibrates. A linear correction cannot change the correlation, so the squared zero-shot correlation is the most it can reach in R² on the training soils.</p>
+<section id="corrections" class="level2">
+<h2 class="anchored" data-anchor-id="corrections">Corrections</h2>
+<p><code>linear_recal</code> maps predictions onto targets with a bias, or with a slope and bias, fitted on the training soils:</p>
+<div id="4b4799b8" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.475341+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:17:53.478517+00:00&quot;,&quot;total&quot;:0.0031792569999993248}}" data-execution_count="4">
+<hr>
+<section id="linear_recal" class="level3">
+<h3 class="anchored" data-anchor-id="linear_recal">linear_recal</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> linear_recal(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    p_tr, <span class="co"># Predictions for the training soils</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>    y_tr, <span class="co"># Targets of the training soils</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    p_te, <span class="co"># Predictions to correct</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    slope:<span class="bu">bool</span><span class="op">=</span><span class="va">True</span>, <span class="co"># Fit a slope as well as a bias</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>numpy.ndarray: <span class="co"># Corrected predictions</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Correct <code>p_te</code> with the bias, or the slope and bias, that map <code>p_tr</code> onto <code>y_tr</code></em></p>
+</section>
+</div>
+<div id="4b834fc2" class="cell">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>p <span class="op">=</span> np.linspace(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">10</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>test_close(linear_recal(p, <span class="dv">2</span> <span class="op">*</span> p <span class="op">+</span> <span class="dv">1</span>, np.array([<span class="fl">3.</span>])), [<span class="fl">7.</span>])</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>test_close(linear_recal(p, p <span class="op">+</span> <span class="dv">1</span>, np.array([<span class="fl">3.</span>]), slope<span class="op">=</span><span class="va">False</span>), [<span class="fl">4.</span>])</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+<p><code>adabn_model</code> recomputes the BatchNorm statistics from the training spectra only, so the held-out soils play no part:</p>
+<div id="7e053ec5" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.479820+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:17:53.482574+00:00&quot;,&quot;total&quot;:0.002758436000021902}}" data-execution_count="6">
+<hr>
+<section id="adabn_model" class="level3">
+<h3 class="anchored" data-anchor-id="adabn_model">adabn_model</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> adabn_model(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    model, <span class="co"># Pretrained model</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    X, <span class="co"># SNV spectra on `rt_wns`, one per row</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    train, <span class="co"># Indices of the training soils</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>):</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Copy of <code>model</code> whose BatchNorm statistics are recomputed on the spectra <code>X[train]</code></em></p>
+</section>
+</div>
+<p><code>cv_recal</code> gives the held-out predictions of each correction for every fold of every repeat, in the format of <code>cv_cnn</code>:</p>
+<div id="73a49613" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.484840+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:17:53.488658+00:00&quot;,&quot;total&quot;:0.003822035999974105}}" data-execution_count="8">
+<hr>
+<section id="cv_recal" class="level3">
+<h3 class="anchored" data-anchor-id="cv_recal">cv_recal</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> cv_recal(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    model, <span class="co"># Pretrained model</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>    X, <span class="co"># SNV spectra on `rt_wns`, one per row</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    y, <span class="co"># Targets</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    ids, <span class="co"># Sample id of each row</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    folds, <span class="co"># Fold of each soil, from `soil_folds`</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)<span class="op">-&gt;</span>pandas.DataFrame: <span class="co"># Held-out predictions</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<p><em>Held-out predictions of the bias, slope and bias, AdaBN and head-refit corrections, for every fold of every repeat</em></p>
+</section>
+</div>
+<p>On random spectra and targets, each correction predicts every soil once per repeat:</p>
+<div id="27da6994" class="cell" data-quarto-private-1="{&quot;key&quot;:&quot;execution&quot;,&quot;value&quot;:{&quot;iopub.execute_input&quot;:&quot;2026-11-04T08:17:53.489119+00:00&quot;,&quot;shell.execute_reply&quot;:&quot;2026-11-04T08:20:15.464152+00:00&quot;,&quot;total&quot;:141.97503757599998}}" data-execution_count="9">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>rng <span class="op">=</span> np.random.default_rng(<span class="dv">0</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> ossl_rt_transfer.pretrain <span class="im">import</span> preprocess</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>Xs <span class="op">=</span> preprocess().fit_transform(rng.uniform(<span class="fl">0.2</span>, <span class="dv">2</span>, (<span class="dv">40</span>, <span class="bu">len</span>(rt_wns))))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>ys, gs <span class="op">=</span> rng.normal(size<span class="op">=</span><span class="dv">40</span>), np.arange(<span class="dv">40</span>) <span class="op">//</span> <span class="dv">2</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>ids <span class="op">=</span> np.array([<span class="ss">f'RT_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">'</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(<span class="dv">40</span>)])</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>pc <span class="op">=</span> cv_recal(SpectralCNN(), Xs, ys, ids, soil_folds(pd.Series(gs, index<span class="op">=</span>ids), k<span class="op">=</span><span class="dv">4</span>, repeats<span class="op">=</span><span class="dv">2</span>))</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>test_eq(pc.groupby([<span class="st">'method'</span>, <span class="st">'repeat'</span>]).sample_id.nunique().unique(), [<span class="dv">40</span>])</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>test_eq(pc.method.nunique(), <span class="dv">5</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>The instruments, properties, starting models and folds are those of <code>07_finetune</code>. Its predictions for zero-shot, block-4 ridge, fine-tuning and PLSR are loaded from its saved results. PLSR does not depend on the starting model, so its predictions are repeated for each:</p>
+<div id="82aa21fc" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rt <span class="op">=</span> load_ringtrial(rt_path())</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>groups <span class="op">=</span> pd.Series(near_dup_groups(rt[<span class="st">'KSSL'</span>]), index<span class="op">=</span>rt[<span class="st">'KSSL'</span>].sample_ids)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>props, insts <span class="op">=</span> [<span class="st">'potassium_cmolkg'</span>, <span class="st">'clay_perc'</span>], [<span class="st">'KSSL'</span>, <span class="st">'IAEA_aug2022'</span>]</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>starts <span class="op">=</span> {<span class="st">'augmented 160'</span>: <span class="st">'aug_ep160'</span>, <span class="st">'augmented 20'</span>: <span class="st">'aug_ep20'</span>, <span class="st">'not augmented 80'</span>: <span class="st">'snv_ep80'</span>}</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>folds <span class="op">=</span> soil_folds(groups)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> []</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> insts:</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> p <span class="kw">in</span> props:</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        X, y, ids <span class="op">=</span> rt_xy(rt[i], p)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>        tag <span class="op">=</span> <span class="bu">dict</span>(instrument<span class="op">=</span>i, <span class="bu">property</span><span class="op">=</span>p)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>        plsr <span class="op">=</span> cached(<span class="ss">f'plsr_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">'</span>, <span class="va">None</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">for</span> s, f <span class="kw">in</span> starts.items():</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>            preds.append(plsr.assign(<span class="op">**</span>tag, start<span class="op">=</span>s))</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>            m <span class="op">=</span> load_pretrained(<span class="ss">f'ossl_</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>f<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>            preds.append(cached(<span class="ss">f'cnn_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>f<span class="sc">}</span><span class="ss">'</span>, <span class="va">None</span>).assign(<span class="op">**</span>tag, start<span class="op">=</span>s))</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>            preds.append(cached(<span class="ss">f'recal_</span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>p<span class="sc">}</span><span class="ss">_</span><span class="sc">{</span>f<span class="sc">}</span><span class="ss">'</span>, <span class="kw">lambda</span>: cv_recal(m, X, y, ids, folds)).assign(<span class="op">**</span>tag, start<span class="op">=</span>s))</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>preds <span class="op">=</span> pd.concat(preds, ignore_index<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>methods <span class="op">=</span> [<span class="st">'zero-shot'</span>, <span class="st">'bias'</span>, <span class="st">'AdaBN'</span>, <span class="st">'slope and bias'</span>, <span class="st">'AdaBN, slope and bias'</span>, <span class="st">'head refit'</span>, <span class="st">'ridge block 4'</span>, <span class="st">'fine-tuned'</span>, <span class="st">'PLSR'</span>]</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>test_eq(<span class="bu">set</span>(preds.method), <span class="bu">set</span>(methods))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+</div>
+</section>
+<section id="scores-against-wet-chemistry" class="level2">
+<h2 class="anchored" data-anchor-id="scores-against-wet-chemistry">Scores against wet chemistry</h2>
+<p>Mean R² and CCC over the 10 repeats, each repeat pooling the held-out predictions of its 10 folds. For K, they are on the <code>log1p</code> scale.:</p>
+<div id="7a92ab1c" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>keys <span class="op">=</span> [<span class="st">'instrument'</span>, <span class="st">'property'</span>, <span class="st">'start'</span>, <span class="st">'method'</span>]</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>scores <span class="op">=</span> repeat_scores(preds, keys).groupby(keys).mean()</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> by_method(col): <span class="cf">return</span> scores[col].unstack(<span class="st">'method'</span>)[methods]</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>by_method(<span class="st">'R²'</span>).<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">method</th>
+<th data-quarto-table-cell-role="th">zero-shot</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">AdaBN</th>
+<th data-quarto-table-cell-role="th">slope and bias</th>
+<th data-quarto-table-cell-role="th">AdaBN, slope and bias</th>
+<th data-quarto-table-cell-role="th">head refit</th>
+<th data-quarto-table-cell-role="th">ridge block 4</th>
+<th data-quarto-table-cell-role="th">fine-tuned</th>
+<th data-quarto-table-cell-role="th">PLSR</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">instrument</th>
+<th data-quarto-table-cell-role="th">property</th>
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">IAEA_aug2022</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.271</td>
+<td>0.462</td>
+<td>0.291</td>
+<td>0.474</td>
+<td>0.417</td>
+<td>0.702</td>
+<td>0.662</td>
+<td>0.728</td>
+<td>0.448</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.395</td>
+<td>0.376</td>
+<td>-0.510</td>
+<td>0.358</td>
+<td>0.217</td>
+<td>0.614</td>
+<td>0.600</td>
+<td>0.728</td>
+<td>0.448</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>-2.729</td>
+<td>-0.120</td>
+<td>-0.059</td>
+<td>0.209</td>
+<td>0.199</td>
+<td>0.579</td>
+<td>0.694</td>
+<td>0.687</td>
+<td>0.448</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>-2.122</td>
+<td>-0.296</td>
+<td>-1.066</td>
+<td>0.336</td>
+<td>0.287</td>
+<td>0.476</td>
+<td>0.458</td>
+<td>0.385</td>
+<td>0.404</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>-3.282</td>
+<td>-0.192</td>
+<td>-1.214</td>
+<td>0.336</td>
+<td>0.295</td>
+<td>0.417</td>
+<td>0.424</td>
+<td>0.448</td>
+<td>0.404</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>-2.572</td>
+<td>-0.307</td>
+<td>-0.116</td>
+<td>0.438</td>
+<td>0.317</td>
+<td>0.463</td>
+<td>0.441</td>
+<td>0.508</td>
+<td>0.404</td>
+</tr>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">KSSL</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.681</td>
+<td>0.821</td>
+<td>0.731</td>
+<td>0.831</td>
+<td>0.835</td>
+<td>0.912</td>
+<td>0.802</td>
+<td>0.911</td>
+<td>0.807</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.685</td>
+<td>0.781</td>
+<td>0.575</td>
+<td>0.783</td>
+<td>0.767</td>
+<td>0.899</td>
+<td>0.769</td>
+<td>0.870</td>
+<td>0.807</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.758</td>
+<td>0.831</td>
+<td>0.642</td>
+<td>0.848</td>
+<td>0.834</td>
+<td>0.943</td>
+<td>0.761</td>
+<td>0.896</td>
+<td>0.807</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.454</td>
+<td>0.440</td>
+<td>0.410</td>
+<td>0.608</td>
+<td>0.591</td>
+<td>0.542</td>
+<td>0.243</td>
+<td>0.602</td>
+<td>0.145</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.285</td>
+<td>0.288</td>
+<td>0.359</td>
+<td>0.537</td>
+<td>0.537</td>
+<td>0.565</td>
+<td>0.282</td>
+<td>0.628</td>
+<td>0.145</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.205</td>
+<td>0.215</td>
+<td>0.226</td>
+<td>0.605</td>
+<td>0.593</td>
+<td>0.588</td>
+<td>0.296</td>
+<td>0.626</td>
+<td>0.145</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+<div id="12f6d548" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>by_method(<span class="st">'CCC'</span>).<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">method</th>
+<th data-quarto-table-cell-role="th">zero-shot</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">AdaBN</th>
+<th data-quarto-table-cell-role="th">slope and bias</th>
+<th data-quarto-table-cell-role="th">AdaBN, slope and bias</th>
+<th data-quarto-table-cell-role="th">head refit</th>
+<th data-quarto-table-cell-role="th">ridge block 4</th>
+<th data-quarto-table-cell-role="th">fine-tuned</th>
+<th data-quarto-table-cell-role="th">PLSR</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">instrument</th>
+<th data-quarto-table-cell-role="th">property</th>
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">IAEA_aug2022</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.637</td>
+<td>0.703</td>
+<td>0.622</td>
+<td>0.656</td>
+<td>0.604</td>
+<td>0.823</td>
+<td>0.809</td>
+<td>0.838</td>
+<td>0.755</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.625</td>
+<td>0.613</td>
+<td>0.383</td>
+<td>0.552</td>
+<td>0.416</td>
+<td>0.786</td>
+<td>0.770</td>
+<td>0.842</td>
+<td>0.755</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.244</td>
+<td>0.514</td>
+<td>0.499</td>
+<td>0.394</td>
+<td>0.380</td>
+<td>0.738</td>
+<td>0.823</td>
+<td>0.816</td>
+<td>0.755</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.358</td>
+<td>0.574</td>
+<td>0.462</td>
+<td>0.522</td>
+<td>0.474</td>
+<td>0.640</td>
+<td>0.625</td>
+<td>0.642</td>
+<td>0.631</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.287</td>
+<td>0.591</td>
+<td>0.442</td>
+<td>0.530</td>
+<td>0.491</td>
+<td>0.603</td>
+<td>0.628</td>
+<td>0.663</td>
+<td>0.631</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.372</td>
+<td>0.619</td>
+<td>0.582</td>
+<td>0.621</td>
+<td>0.510</td>
+<td>0.621</td>
+<td>0.627</td>
+<td>0.688</td>
+<td>0.631</td>
+</tr>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">KSSL</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.857</td>
+<td>0.914</td>
+<td>0.876</td>
+<td>0.908</td>
+<td>0.911</td>
+<td>0.953</td>
+<td>0.891</td>
+<td>0.952</td>
+<td>0.906</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.846</td>
+<td>0.888</td>
+<td>0.807</td>
+<td>0.879</td>
+<td>0.869</td>
+<td>0.947</td>
+<td>0.874</td>
+<td>0.928</td>
+<td>0.906</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.891</td>
+<td>0.922</td>
+<td>0.850</td>
+<td>0.918</td>
+<td>0.910</td>
+<td>0.971</td>
+<td>0.869</td>
+<td>0.944</td>
+<td>0.906</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.778</td>
+<td>0.774</td>
+<td>0.765</td>
+<td>0.761</td>
+<td>0.749</td>
+<td>0.707</td>
+<td>0.595</td>
+<td>0.765</td>
+<td>0.537</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.725</td>
+<td>0.726</td>
+<td>0.738</td>
+<td>0.708</td>
+<td>0.708</td>
+<td>0.746</td>
+<td>0.609</td>
+<td>0.774</td>
+<td>0.537</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.739</td>
+<td>0.742</td>
+<td>0.740</td>
+<td>0.760</td>
+<td>0.751</td>
+<td>0.744</td>
+<td>0.620</td>
+<td>0.769</td>
+<td>0.537</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="share-of-the-fine-tuning-gain" class="level2">
+<h2 class="anchored" data-anchor-id="share-of-the-fine-tuning-gain">Share of the fine-tuning gain</h2>
+<p>For each repeat, the mean squared error on the model scale gives the share of the fine-tuning gain that a method recovers: (zero-shot error − method error) / (zero-shot error − fine-tuned error). A share of 1 matches fine-tuning, and above 1 beats it:</p>
+<div id="ea1833f1" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>mse <span class="op">=</span> preds.assign(se<span class="op">=</span>(preds.pred <span class="op">-</span> preds.y)<span class="op">**</span><span class="dv">2</span>).groupby(keys <span class="op">+</span> [<span class="st">'repeat'</span>]).se.mean().unstack(<span class="st">'method'</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>share <span class="op">=</span> mse.drop(columns<span class="op">=</span><span class="st">'PLSR'</span>).<span class="bu">apply</span>(<span class="kw">lambda</span> c: (mse[<span class="st">'zero-shot'</span>] <span class="op">-</span> c) <span class="op">/</span> (mse[<span class="st">'zero-shot'</span>] <span class="op">-</span> mse[<span class="st">'fine-tuned'</span>]))</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>share.groupby([<span class="st">'instrument'</span>, <span class="st">'property'</span>, <span class="st">'start'</span>]).mean()[[m <span class="cf">for</span> m <span class="kw">in</span> methods <span class="cf">if</span> m <span class="kw">not</span> <span class="kw">in</span> (<span class="st">'zero-shot'</span>, <span class="st">'fine-tuned'</span>, <span class="st">'PLSR'</span>)]].<span class="bu">round</span>(<span class="dv">2</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">method</th>
+<th data-quarto-table-cell-role="th">bias</th>
+<th data-quarto-table-cell-role="th">AdaBN</th>
+<th data-quarto-table-cell-role="th">slope and bias</th>
+<th data-quarto-table-cell-role="th">AdaBN, slope and bias</th>
+<th data-quarto-table-cell-role="th">head refit</th>
+<th data-quarto-table-cell-role="th">ridge block 4</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">instrument</th>
+<th data-quarto-table-cell-role="th">property</th>
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">IAEA_aug2022</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.42</td>
+<td>0.05</td>
+<td>0.45</td>
+<td>0.32</td>
+<td>0.95</td>
+<td>0.86</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>-0.06</td>
+<td>-2.73</td>
+<td>-0.11</td>
+<td>-0.54</td>
+<td>0.66</td>
+<td>0.62</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.76</td>
+<td>0.78</td>
+<td>0.86</td>
+<td>0.86</td>
+<td>0.97</td>
+<td>1.00</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.73</td>
+<td>0.42</td>
+<td>0.98</td>
+<td>0.96</td>
+<td>1.04</td>
+<td>1.03</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.83</td>
+<td>0.55</td>
+<td>0.97</td>
+<td>0.96</td>
+<td>0.99</td>
+<td>0.99</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.74</td>
+<td>0.80</td>
+<td>0.98</td>
+<td>0.94</td>
+<td>0.99</td>
+<td>0.98</td>
+</tr>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">KSSL</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.61</td>
+<td>0.22</td>
+<td>0.65</td>
+<td>0.67</td>
+<td>1.01</td>
+<td>0.53</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.52</td>
+<td>-0.59</td>
+<td>0.53</td>
+<td>0.44</td>
+<td>1.16</td>
+<td>0.46</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.53</td>
+<td>-0.84</td>
+<td>0.66</td>
+<td>0.56</td>
+<td>1.35</td>
+<td>0.03</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>-0.12</td>
+<td>-0.34</td>
+<td>1.15</td>
+<td>1.02</td>
+<td>0.69</td>
+<td>-1.70</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.01</td>
+<td>0.22</td>
+<td>0.75</td>
+<td>0.75</td>
+<td>0.82</td>
+<td>-0.04</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.02</td>
+<td>0.05</td>
+<td>0.96</td>
+<td>0.93</td>
+<td>0.92</td>
+<td>0.20</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="paired-tests-against-fine-tuning" class="level2">
+<h2 class="anchored" data-anchor-id="paired-tests-against-fine-tuning">Paired tests against fine-tuning</h2>
+<p>As in <code>07_finetune</code>, the squared error on the model scale is averaged over the repeats and over the soils of each near-duplicate group, and each method is compared with fine-tuning from the same starting model. <code>A_better</code> is the share of groups where the method has the smaller error. The p-values are not corrected for the number of tests:</p>
+<div id="c4fb381e" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>ge <span class="op">=</span> group_errors(preds, groups, keys)</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>vs_ft <span class="op">=</span> pd.DataFrame({(i, p, s, m): paired_test(ge.loc[(i, p, s, m)], ge.loc[(i, p, s, <span class="st">'fine-tuned'</span>)])</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>                      <span class="cf">for</span> i <span class="kw">in</span> insts <span class="cf">for</span> p <span class="kw">in</span> props <span class="cf">for</span> s <span class="kw">in</span> starts <span class="cf">for</span> m <span class="kw">in</span> [<span class="st">'slope and bias'</span>, <span class="st">'head refit'</span>]}).T</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>vs_ft.index.names <span class="op">=</span> keys</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>vs_ft[[<span class="st">'A'</span>, <span class="st">'B'</span>, <span class="st">'A_better'</span>, <span class="st">'p'</span>]].unstack(<span class="st">'method'</span>).<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">A</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">B</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">A_better</th>
+<th colspan="2" data-quarto-table-cell-role="th" data-halign="left">p</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">method</th>
+<th data-quarto-table-cell-role="th">head refit</th>
+<th data-quarto-table-cell-role="th">slope and bias</th>
+<th data-quarto-table-cell-role="th">head refit</th>
+<th data-quarto-table-cell-role="th">slope and bias</th>
+<th data-quarto-table-cell-role="th">head refit</th>
+<th data-quarto-table-cell-role="th">slope and bias</th>
+<th data-quarto-table-cell-role="th">head refit</th>
+<th data-quarto-table-cell-role="th">slope and bias</th>
+</tr>
+<tr class="header">
+<th data-quarto-table-cell-role="th">instrument</th>
+<th data-quarto-table-cell-role="th">property</th>
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">IAEA_aug2022</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>43.757</td>
+<td>71.397</td>
+<td>40.257</td>
+<td>40.257</td>
+<td>0.603</td>
+<td>0.317</td>
+<td>0.259</td>
+<td>0.002</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>49.064</td>
+<td>83.107</td>
+<td>40.545</td>
+<td>40.545</td>
+<td>0.381</td>
+<td>0.238</td>
+<td>0.003</td>
+<td>0.000</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>60.941</td>
+<td>112.809</td>
+<td>45.611</td>
+<td>45.611</td>
+<td>0.429</td>
+<td>0.159</td>
+<td>0.009</td>
+<td>0.000</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.032</td>
+<td>0.041</td>
+<td>0.037</td>
+<td>0.037</td>
+<td>0.635</td>
+<td>0.444</td>
+<td>0.158</td>
+<td>0.160</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.036</td>
+<td>0.039</td>
+<td>0.033</td>
+<td>0.033</td>
+<td>0.413</td>
+<td>0.365</td>
+<td>0.068</td>
+<td>0.029</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.033</td>
+<td>0.035</td>
+<td>0.030</td>
+<td>0.030</td>
+<td>0.508</td>
+<td>0.460</td>
+<td>0.427</td>
+<td>0.311</td>
+</tr>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">KSSL</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>13.214</td>
+<td>23.710</td>
+<td>13.264</td>
+<td>13.264</td>
+<td>0.556</td>
+<td>0.349</td>
+<td>0.827</td>
+<td>0.005</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>15.019</td>
+<td>31.194</td>
+<td>19.331</td>
+<td>19.331</td>
+<td>0.540</td>
+<td>0.413</td>
+<td>0.712</td>
+<td>0.009</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>8.437</td>
+<td>21.996</td>
+<td>15.368</td>
+<td>15.368</td>
+<td>0.603</td>
+<td>0.460</td>
+<td>0.047</td>
+<td>0.136</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.028</td>
+<td>0.023</td>
+<td>0.025</td>
+<td>0.025</td>
+<td>0.476</td>
+<td>0.492</td>
+<td>0.533</td>
+<td>0.565</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.026</td>
+<td>0.027</td>
+<td>0.023</td>
+<td>0.023</td>
+<td>0.349</td>
+<td>0.333</td>
+<td>0.055</td>
+<td>0.006</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.025</td>
+<td>0.023</td>
+<td>0.023</td>
+<td>0.023</td>
+<td>0.349</td>
+<td>0.460</td>
+<td>0.024</td>
+<td>0.253</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="zero-shot-calibration" class="level2">
+<h2 class="anchored" data-anchor-id="zero-shot-calibration">Zero-shot calibration</h2>
+<p>A linear regression of the targets on the zero-shot predictions, over all soils, shows how far the pretrained model is from calibrated on each instrument. A calibrated model has a slope of 1 and predictions with the same mean as the targets. <code>r²</code> is the most R² a linear correction can reach on these soils:</p>
+<div id="6013c8e3" class="cell" data-rtdata="true">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> calib(d):</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>    b, a <span class="op">=</span> np.polyfit(d.pred, d.y, <span class="dv">1</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.Series({<span class="st">'slope'</span>: b, <span class="st">'mean pred - mean y'</span>: d.pred.mean() <span class="op">-</span> d.y.mean(), <span class="st">'r²'</span>: np.corrcoef(d.pred, d.y)[<span class="dv">0</span>, <span class="dv">1</span>]<span class="op">**</span><span class="dv">2</span>})</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>zs <span class="op">=</span> preds[(preds.method <span class="op">==</span> <span class="st">'zero-shot'</span>) <span class="op">&amp;</span> (preds.repeat <span class="op">==</span> <span class="dv">0</span>)]</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>cal <span class="op">=</span> zs.groupby([<span class="st">'instrument'</span>, <span class="st">'property'</span>, <span class="st">'start'</span>]).<span class="bu">apply</span>(calib)</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>cal.join(scores[<span class="st">'R²'</span>].unstack(<span class="st">'method'</span>)[<span class="st">'fine-tuned'</span>].rename(<span class="st">'fine-tuned R²'</span>)).<span class="bu">round</span>(<span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+
+
+<table class="dataframe caption-top table table-sm table-striped small" data-border="1">
+<thead>
+<tr class="header">
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th">slope</th>
+<th data-quarto-table-cell-role="th">mean pred - mean y</th>
+<th data-quarto-table-cell-role="th">r²</th>
+<th data-quarto-table-cell-role="th">fine-tuned R²</th>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">instrument</th>
+<th data-quarto-table-cell-role="th">property</th>
+<th data-quarto-table-cell-role="th">start</th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+<th data-quarto-table-cell-role="th"></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">IAEA_aug2022</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.803</td>
+<td>-5.388</td>
+<td>0.513</td>
+<td>0.728</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.825</td>
+<td>-0.513</td>
+<td>0.416</td>
+<td>0.728</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.468</td>
+<td>-19.052</td>
+<td>0.281</td>
+<td>0.687</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.438</td>
+<td>0.327</td>
+<td>0.381</td>
+<td>0.385</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.458</td>
+<td>0.422</td>
+<td>0.395</td>
+<td>0.448</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.445</td>
+<td>0.363</td>
+<td>0.471</td>
+<td>0.508</td>
+</tr>
+<tr class="odd">
+<th rowspan="6" data-quarto-table-cell-role="th" data-valign="top">KSSL</th>
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">clay_perc</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.882</td>
+<td>4.480</td>
+<td>0.843</td>
+<td>0.911</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.916</td>
+<td>3.769</td>
+<td>0.795</td>
+<td>0.870</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.864</td>
+<td>3.297</td>
+<td>0.858</td>
+<td>0.896</td>
+</tr>
+<tr class="even">
+<th rowspan="3" data-quarto-table-cell-role="th" data-valign="top">potassium_cmolkg</th>
+<th data-quarto-table-cell-role="th">augmented 160</th>
+<td>0.657</td>
+<td>0.014</td>
+<td>0.629</td>
+<td>0.602</td>
+</tr>
+<tr class="odd">
+<th data-quarto-table-cell-role="th">augmented 20</th>
+<td>0.600</td>
+<td>0.041</td>
+<td>0.566</td>
+<td>0.628</td>
+</tr>
+<tr class="even">
+<th data-quarto-table-cell-role="th">not augmented 80</th>
+<td>0.561</td>
+<td>0.047</td>
+<td>0.630</td>
+<td>0.626</td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</section>
+<section id="results" class="level2">
+<h2 class="anchored" data-anchor-id="results">Results</h2>
+<p><strong>K: fine-tuning is a linear recalibration.</strong> A slope and bias fitted on the zero-shot predictions gives R² 0.54 to 0.61 on KSSL and 0.34 to 0.44 on IAEA, against 0.60 to 0.63 and 0.39 to 0.51 for fine-tuning. It recovers 75% to 115% of the fine-tuning gain on KSSL and 97% to 98% on IAEA. In the paired tests it is not significantly worse than fine-tuning, except from the augmented 20 model (p = 0.006 on KSSL and 0.03 on IAEA). The squared correlation of the zero-shot predictions, 0.57 to 0.63 on KSSL and 0.38 to 0.47 on IAEA, is about the R² that fine-tuning reaches. So with these soils, fine-tuning does not rank the soils better than the pretrained model already does. It corrects the scale and the offset: - The zero-shot predictions are too spread out. The slope of the targets on the predictions is 0.56 to 0.66 on KSSL and 0.44 to 0.46 on IAEA, where a calibrated model has 1. - On IAEA they are also too high, by 0.33 to 0.42 on the <code>log1p</code> scale. On KSSL the offset is only 0.01 to 0.05.</p>
+<p>The lower ceiling on IAEA, with r² 0.38 to 0.47 against 0.57 to 0.63, is the part of the K problem that comes from the IAEA spectra. PLSR trained on IAEA reaches no more (0.40).</p>
+<p><strong>Clay: fine-tuning re-weights the features.</strong> A slope and bias recovers only 53% to 66% of the fine-tuning gain on KSSL and is significantly worse than fine-tuning in two of three cases (p = 0.005 and 0.009). On IAEA it reaches R² 0.21 to 0.47 against 0.69 to 0.73 (p ≤ 0.002). Refitting the head on the pooled features does much better: R² 0.90 to 0.94 on KSSL, matching or beating fine-tuning, and 0.58 to 0.70 on IAEA. From the unaugmented model on KSSL it beats fine-tuning (0.94 against 0.90, p = 0.047). On IAEA, fine-tuning still beats the head refit from two of the three starting models (p = 0.003 and 0.009). So the pooled features of the pretrained clay models carry what is needed on KSSL, and mostly on IAEA, but the OSSL head combines them in a way that does not suit these instruments. On IAEA, part of the gain needs changes inside the backbone.</p>
+<p><strong>AdaBN does not help.</strong> Recomputing the BatchNorm statistics on 63 soils removes part of the IAEA offset without targets, but a bias correction does better. AdaBN lowers zero-shot R² in 4 of the 12 cases, down to -0.51 for IAEA clay from the augmented 20 model. Once a slope and bias are fitted, AdaBN lowers R² in 10 of the 12 cases and raises it by at most 0.004.</p>
+<p>The two properties therefore need different things. For K, the pretrained model sets the ranking, and the soils of an instrument only serve to calibrate it. A few soils with a linear correction may be enough, and better K needs better features, not more fine-tuning. For clay, the soils of an instrument re-weight the features, and on IAEA they also change the backbone.</p>
+
+
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+  window.document.addEventListener("DOMContentLoaded", function (event) {
+    const icon = "";
+    const anchorJS = new window.AnchorJS();
+    anchorJS.options = {
+      placement: 'right',
+      icon: icon
+    };
+    anchorJS.add('.anchored');
+    const isCodeAnnotation = (el) => {
+      for (const clz of el.classList) {
+        if (clz.startsWith('code-annotation-')) {                     
+          return true;
+        }
+      }
+      return false;
+    }
+    const onCopySuccess = function(e) {
+      // button target
+      const button = e.trigger;
+      // don't keep focus
+      button.blur();
+      // flash "checked"
+      button.classList.add('code-copy-button-checked');
+      var currentTitle = button.getAttribute("title");
+      button.setAttribute("title", "Copied!");
+      let tooltip;
+      if (window.bootstrap) {
+        button.setAttribute("data-bs-toggle", "tooltip");
+        button.setAttribute("data-bs-placement", "left");
+        button.setAttribute("data-bs-title", "Copied!");
+        tooltip = new bootstrap.Tooltip(button, 
+          { trigger: "manual", 
+            customClass: "code-copy-button-tooltip",
+            offset: [0, -8]});
+        tooltip.show();    
+      }
+      setTimeout(function() {
+        if (tooltip) {
+          tooltip.hide();
+          button.removeAttribute("data-bs-title");
+          button.removeAttribute("data-bs-toggle");
+          button.removeAttribute("data-bs-placement");
+        }
+        button.setAttribute("title", currentTitle);
+        button.classList.remove('code-copy-button-checked');
+      }, 1000);
+      // clear code selection
+      e.clearSelection();
+    }
+    const getTextToCopy = function(trigger) {
+      const outerScaffold = trigger.parentElement.cloneNode(true);
+      const codeEl = outerScaffold.querySelector('code');
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+    const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+      text: getTextToCopy
+    });
+    clipboard.on('success', onCopySuccess);
+    if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+      const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+        text: getTextToCopy,
+        container: window.document.getElementById('quarto-embedded-source-code-modal')
+      });
+      clipboardModal.on('success', onCopySuccess);
+    }
+    const viewSource = window.document.getElementById('quarto-view-source') ||
+                       window.document.getElementById('quarto-code-tools-source');
+    if (viewSource) {
+      const sourceUrl = viewSource.getAttribute("data-quarto-source-url");
+      viewSource.addEventListener("click", function(e) {
+        if (sourceUrl) {
+          // rstudio viewer pane
+          if (/\bcapabilities=\b/.test(window.location)) {
+            window.open(sourceUrl);
+          } else {
+            window.location.href = sourceUrl;
+          }
+        } else {
+          const modal = new bootstrap.Modal(document.getElementById('quarto-embedded-source-code-modal'));
+          modal.show();
+        }
+        return false;
+      });
+    }
+    function toggleCodeHandler(show) {
+      return function(e) {
+        const cellDetails = window.document.querySelectorAll(".cell details.code-fold");
+        for (let i=0; i<cellDetails.length; i++) {
+          const details = cellDetails[i];
+          if (show) {
+            details.open = true;
+          } else {
+            details.removeAttribute("open");
+          }
+        }
+        const cellCodeDivs = window.document.querySelectorAll(".cell div.sourceCode.cell-code");
+        const fromCls = show ? "hidden" : "unhidden";
+        const toCls = show ? "unhidden" : "hidden";
+        for (let i=0; i<cellCodeDivs.length; i++) {
+          const codeDiv = cellCodeDivs[i];
+          if (codeDiv.classList.contains(fromCls)) {
+            codeDiv.classList.remove(fromCls);
+            codeDiv.classList.add(toCls);
+          } 
+        }
+        return false;
+      }
+    }
+    const hideAllCode = window.document.getElementById("quarto-hide-all-code");
+    if (hideAllCode) {
+      hideAllCode.addEventListener("click", toggleCodeHandler(false));
+    }
+    const showAllCode = window.document.getElementById("quarto-show-all-code");
+    if (showAllCode) {
+      showAllCode.addEventListener("click", toggleCodeHandler(true));
+    }
+      var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+      var mailtoRegex = new RegExp(/^mailto:/);
+        var filterRegex = new RegExp("https:\/\/franckalbinet\.github\.io\/ossl-rt-transfer");
+      var isInternal = (href) => {
+          return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+      }
+      // Inspect non-navigation links and adorn them if external
+      window.quartoDecorateExternalLinks = function (root) {
+     var links = (root || window.document).querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+      for (var i=0; i<links.length; i++) {
+        const link = links[i];
+        if (!isInternal(link.href)) {
+          // undo the damage that might have been done by quarto-nav.js in the case of
+          // links that we want to consider external
+          if (link.dataset.originalHref !== undefined) {
+            link.href = link.dataset.originalHref;
+          }
+          if (!link.classList.contains('no-external-icon')) {
+          }
+        }
+      }
+      };
+      window.quartoDecorateExternalLinks(window.document);
+    // Esc closes the popup (WCAG 1.4.13) and focus leaving both trigger and
+    // popup closes it (WCAG 2.4.11); tippy handles neither for interactive popups.
+    const hideOnEscAndFocusOut = {
+      name: 'hideOnEscAndFocusOut',
+      defaultValue: true,
+      fn(instance) {
+        const dismiss = () => {
+          // A show scheduled by the trigger delay would otherwise reopen it
+          instance.clearDelayTimeouts();
+          instance.hide();
+        };
+        const onKeyDown = (event) => {
+          if (event.key !== 'Escape') {
+            return;
+          }
+          // Keep Esc from also reaching page handlers (e.g. reveal.js overview),
+          // except an open reveal.js slide menu, which Esc should close too.
+          // The menu handles keys only when its keyboard option is on.
+          const menuHandlesEsc = window.Reveal?.getPlugin?.('menu')?.isOpen() &&
+            window.Reveal.getConfig().menu?.keyboard !== false;
+          if (!menuHandlesEsc) {
+            event.stopPropagation();
+          }
+          if (instance.popper.contains(window.document.activeElement)) {
+            // Disabled while refocusing so the focus trigger does not reopen it
+            instance.disable();
+            instance.reference.focus();
+            instance.enable();
+          }
+          dismiss();
+        };
+        const onFocusOut = (event) => {
+          const target = event.relatedTarget;
+          if (target && !instance.reference.contains(target) &&
+              !instance.popper.contains(target)) {
+            dismiss();
+          }
+        };
+        // On the trigger too: a click trigger (code-annotations: select) has no
+        // blur handling. Attached for the instance's lifetime so leaving the
+        // trigger also cancels a show still pending on the trigger delay.
+        instance.reference.addEventListener('focusout', onFocusOut);
+        return {
+          onShow() {
+            window.document.addEventListener('keydown', onKeyDown, true);
+            instance.popper.addEventListener('focusout', onFocusOut);
+          },
+          onHide() {
+            window.document.removeEventListener('keydown', onKeyDown, true);
+            instance.popper.removeEventListener('focusout', onFocusOut);
+          },
+          onDestroy() {
+            instance.reference.removeEventListener('focusout', onFocusOut);
+          },
+        };
+      },
+    };
+    function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+      const config = {
+        allowHTML: true,
+        maxWidth: 500,
+        delay: 100,
+        arrow: false,
+        appendTo: function(el) {
+            return el.parentElement;
+        },
+        interactive: true,
+        interactiveBorder: 10,
+        theme: 'quarto',
+        placement: 'bottom-start',
+        plugins: [hideOnEscAndFocusOut],
+      };
+      if (contentFn) {
+        config.content = contentFn;
+      }
+      if (onTriggerFn) {
+        config.onTrigger = onTriggerFn;
+      }
+      if (onUntriggerFn) {
+        config.onUntrigger = onUntriggerFn;
+      }
+      window.tippy(el, config); 
+    }
+    const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+    for (var i=0; i<noterefs.length; i++) {
+      const ref = noterefs[i];
+      tippyHover(ref, function() {
+        // use id or data attribute instead here
+        let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+        try { href = new URL(href).hash; } catch {}
+        const id = href.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note) {
+          return note.innerHTML;
+        } else {
+          return "";
+        }
+      });
+    }
+    const xrefs = window.document.querySelectorAll('a.quarto-xref');
+    const processXRef = (id, note) => {
+      // Strip column container classes
+      const stripColumnClz = (el) => {
+        el.classList.remove("page-full", "page-columns");
+        if (el.children) {
+          for (const child of el.children) {
+            stripColumnClz(child);
+          }
+        }
+      }
+      stripColumnClz(note)
+      if (id === null || id.startsWith('sec-')) {
+        // Special case sections, only their first couple elements
+        const container = document.createElement("div");
+        if (note.children && note.children.length > 2) {
+          container.appendChild(note.children[0].cloneNode(true));
+          for (let i = 1; i < note.children.length; i++) {
+            const child = note.children[i];
+            if (child.tagName === "P" && child.innerText === "") {
+              continue;
+            } else {
+              container.appendChild(child.cloneNode(true));
+              break;
+            }
+          }
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(container);
+          }
+          return container.innerHTML
+        } else {
+          if (window.Quarto?.typesetMath) {
+            window.Quarto.typesetMath(note);
+          }
+          return note.innerHTML;
+        }
+      } else {
+        // Remove any anchor links if they are present
+        const anchorLink = note.querySelector('a.anchorjs-link');
+        if (anchorLink) {
+          anchorLink.remove();
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        if (note.classList.contains("callout")) {
+          return note.outerHTML;
+        } else {
+          return note.innerHTML;
+        }
+      }
+    }
+    for (var i=0; i<xrefs.length; i++) {
+      const xref = xrefs[i];
+      tippyHover(xref, undefined, function(instance) {
+        instance.disable();
+        let url = xref.getAttribute('href');
+        let hash = undefined; 
+        if (url.startsWith('#')) {
+          hash = url;
+        } else {
+          try { hash = new URL(url).hash; } catch {}
+        }
+        if (hash) {
+          const id = hash.replace(/^#\/?/, "");
+          const note = window.document.getElementById(id);
+          if (note !== null) {
+            try {
+              const html = processXRef(id, note.cloneNode(true));
+              instance.setContent(html);
+            } finally {
+              instance.enable();
+              instance.show();
+            }
+          } else {
+            // See if we can fetch this
+            fetch(url.split('#')[0])
+            .then(res => res.text())
+            .then(html => {
+              const parser = new DOMParser();
+              const htmlDoc = parser.parseFromString(html, "text/html");
+              const note = htmlDoc.getElementById(id);
+              if (note !== null) {
+                const html = processXRef(id, note);
+                instance.setContent(html);
+              } 
+            }).finally(() => {
+              instance.enable();
+              instance.show();
+            });
+          }
+        } else {
+          // See if we can fetch a full url (with no hash to target)
+          // This is a special case and we should probably do some content thinning / targeting
+          fetch(url)
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.querySelector('main.content');
+            if (note !== null) {
+              // This should only happen for chapter cross references
+              // (since there is no id in the URL)
+              // remove the first header
+              if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+                note.children[0].remove();
+              }
+              const html = processXRef(null, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      }, function(instance) {
+      });
+    }
+        let selectedAnnoteEl;
+        const selectorForAnnotation = ( cell, annotation) => {
+          let cellAttr = 'data-code-cell="' + cell + '"';
+          let lineAttr = 'data-code-annotation="' +  annotation + '"';
+          const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+          return selector;
+        }
+        const selectCodeLines = (annoteEl) => {
+          const doc = window.document;
+          const targetCell = annoteEl.getAttribute("data-target-cell");
+          const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+          const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+          const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+          const lineIds = lines.map((line) => {
+            return targetCell + "-" + line;
+          })
+          // Each band is positioned against its own containing block, which is
+          // not the offsetParent of the lines, so place it from client rects.
+          const placeBand = (band, firstEl, lastEl, codeBlock) => {
+            const container = band.offsetParent;
+            if (container === null) {
+              return;
+            }
+            const containerRect = container.getBoundingClientRect();
+            // Reveal.js scales slides with a transform, so convert client
+            // pixels back to the CSS pixels of the container.
+            const scale = containerRect.height / container.offsetHeight || 1;
+            const firstRect = firstEl.getBoundingClientRect();
+            const lastRect = lastEl.getBoundingClientRect();
+            const top = (firstRect.top - containerRect.top) / scale - container.clientTop + container.scrollTop;
+            const height = (lastRect.bottom - firstRect.top) / scale;
+            band.style.top = top - 2 + "px";
+            band.style.height = height + 4 + "px";
+            if (codeBlock) {
+              // Without the copy button wrapper, the containing block is wider
+              // than the code block, so span the code block explicitly.
+              const blockRect = codeBlock.getBoundingClientRect();
+              band.style.left = (blockRect.left - containerRect.left) / scale - container.clientLeft + container.scrollLeft + "px";
+              band.style.width = blockRect.width / scale + "px";
+            }
+          };
+          if (lineIds.length > 0) {
+            const el = window.document.getElementById(lineIds[0]);
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const parent = el.parentElement.parentElement;
+            // cook up a div (if necessary) and position it
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            placeBand(div, el, lastEl, parent.closest("div.sourceCode") || parent);
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            placeBand(gutterDiv, el, lastEl);
+            selectedAnnoteEl = annoteEl;
+          }
+        };
+        const unselectCodeLines = () => {
+          const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+          elementsIds.forEach((elId) => {
+            const div = window.document.getElementById(elId);
+            if (div) {
+              div.remove();
+            }
+          });
+          selectedAnnoteEl = undefined;
+        };
+          // Handle positioning of the toggle
+      window.addEventListener(
+        "resize",
+        throttle(() => {
+          elRect = undefined;
+          if (selectedAnnoteEl) {
+            selectCodeLines(selectedAnnoteEl);
+          }
+        }, 10)
+      );
+      function throttle(fn, ms) {
+      let throttle = false;
+      let timer;
+        return (...args) => {
+          if(!throttle) { // first call gets through
+              fn.apply(this, args);
+              throttle = true;
+          } else { // all the others get throttled
+              if(timer) clearTimeout(timer); // cancel #2
+              timer = setTimeout(() => {
+                fn.apply(this, args);
+                timer = throttle = false;
+              }, ms);
+          }
+        };
+      }
+        // Attach click handler to the DT
+        const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+        for (const annoteDlNode of annoteDls) {
+          annoteDlNode.addEventListener('click', (event) => {
+            const clickedEl = event.target;
+            if (clickedEl !== selectedAnnoteEl) {
+              unselectCodeLines();
+              const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+              if (activeEl) {
+                activeEl.classList.remove('code-annotation-active');
+              }
+              selectCodeLines(clickedEl);
+              clickedEl.classList.add('code-annotation-active');
+            } else {
+              // Unselect the line
+              unselectCodeLines();
+              clickedEl.classList.remove('code-annotation-active');
+            }
+          });
+        }
+    const findCites = (el) => {
+      const parentEl = el.parentElement;
+      if (parentEl) {
+        const cites = parentEl.dataset.cites;
+        if (cites) {
+          return {
+            el,
+            cites: cites.split(' ')
+          };
+        } else {
+          return findCites(el.parentElement)
+        }
+      } else {
+        return undefined;
+      }
+    };
+    var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+    for (var i=0; i<bibliorefs.length; i++) {
+      const ref = bibliorefs[i];
+      const citeInfo = findCites(ref);
+      if (citeInfo) {
+        tippyHover(citeInfo.el, function() {
+          var popup = window.document.createElement('div');
+          citeInfo.cites.forEach(function(cite) {
+            var citeDiv = window.document.createElement('div');
+            citeDiv.classList.add('hanging-indent');
+            citeDiv.classList.add('csl-entry');
+            var biblioDiv = window.document.getElementById('ref-' + cite);
+            if (biblioDiv) {
+              citeDiv.innerHTML = biblioDiv.innerHTML;
+            }
+            popup.appendChild(citeDiv);
+          });
+          return popup.innerHTML;
+        });
+      }
+    }
+  });
+  </script>
+  <script type="application/javascript">
+  window.quartoScrollableRegionsLabels = {"code":"Scrollable code","output":"Scrollable output"};
+  </script>
+</div> <!-- /content -->
+
+
+
+
+<footer class="footer"><div class="nav-footer"><div class="nav-footer-center"><div class="toc-actions d-sm-block d-md-none"><ul><li><a href="https://github.com/franckalbinet/ossl-rt-transfer/issues/new" class="toc-action"><i class="bi bi-github"></i>Report an issue</a></li></ul></div></div></div></footer></body></html>
