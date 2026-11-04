@@ -75,12 +75,12 @@ def finetune(
     test, # Indices of the held-out soils, only scored
     epochs, # Number of one-cycle epochs
     lr=3e-3, # Maximum learning rate
-    bs=16, # Batch size
+    bs=16, # Batch size, capped at the number of training soils
     seed=0, # Seed for the training
 )->tuple: # Predictions for `test`, and the held-out loss, R² and bias after each epoch
     "Fine-tune a copy of all of `model` on the soils `train`"
     set_seed(seed)
-    dls, _ = get_spectral_dls(X, y, rt_wns, splitter=lambda X, y: (train, test, test), bs=bs, batch_tfms=[BatchSNV()])
+    dls, _ = get_spectral_dls(X, y, rt_wns, splitter=lambda X, y: (train, test, test), bs=min(bs, len(train)), batch_tfms=[BatchSNV()])
     learn = spectral_learner(dls, copy.deepcopy(model), metrics=[R2Score(), AccumMetric(_bias, flatten=True)])
     with learn.no_bar(), learn.no_logging(): learn.fit_one_cycle(epochs, lr_max=lr)
     hist = pd.DataFrame(learn.recorder.values, columns=['train_loss', 'valid_loss', 'r2', 'bias']).rename_axis('epoch').reset_index()
