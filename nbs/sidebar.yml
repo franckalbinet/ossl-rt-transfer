@@ -15,6 +15,7 @@ website:
           - 07_finetune.ipynb
           - 08_recalibrate.ipynb
           - 09_all_labs.ipynb
+          - 10_where_it_fails.ipynb
       - section: "Cross-calibration"
         contents:
           - 03_instrument_model.ipynb
